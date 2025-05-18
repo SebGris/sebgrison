@@ -5,8 +5,7 @@ Comptable expérimenté en reconversion vers le développement informatique. Pas
 ## 🔧 Compétences techniques
 
 * **Langages** : Python, C#
-* **Bases de données** : SQLite, PostgreSQL
-* **Outils** : Git, Visual Studio Code, .NET, Jupyter, pandas, Selenium
+* **Outils** : Git, Visual Studio Code, .NET
 * **Méthodologies** : Programmation orientée objet, automatisation, scraping, interfaces utilisateur
 
 ## 📂 Projets récents
