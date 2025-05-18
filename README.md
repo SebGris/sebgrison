@@ -1,6 +1,6 @@
 # 👋 Bonjour, je suis Sébastien Grison
 
-Comptable expérimenté en reconversion vers le développement informatique. Passionné par Python, C# et les solutions logicielles concrètes. Mon objectif est d'appliquer mes compétences analytiques et mon expérience métier à des projets numériques utiles et bien construits.
+Comptable expérimenté en reconversion vers le développement informatique. Passionné par Python, C#. Mon objectif est d'appliquer mes compétences analytiques et mon expérience métier à des projets numériques utiles et bien construits.
 
 ## 🔧 Compétences techniques
 
