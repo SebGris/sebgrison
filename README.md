@@ -65,8 +65,6 @@ Consolidation des compétences en algorithmique avec un focus sur l’efficacit�
 
 ---
 
-🎓 *Formation suivie sur [OpenClassrooms](https://openclassrooms.com/fr/paths/879-developpeur-dapplication-python)*  
-
 ## 📫 Me contacter
 
 **Sébastien Grison**  
