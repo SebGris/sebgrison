@@ -1,41 +1,61 @@
-# 👋 Bonjour, je suis Sébastien Grison
+# 🐍 Projets – Développeur d'application Python (OpenClassrooms)
 
-Comptable expérimenté en reconversion vers le développement informatique. Passionné par Python, C#. Mon objectif est d'appliquer mes compétences analytiques et mon expérience métier à des projets numériques utiles et bien construits.
+Bienvenue sur ce dépôt contenant mes 7 premiers projets réalisés dans le cadre du parcours [Développeur d'application Python](https://openclassrooms.com/fr/paths/879-developpeur-dapplication-python) chez OpenClassrooms.
 
-## 🔧 Compétences techniques
+🎓 Objectif : Développer mes compétences en programmation Python, conception logicielle, résolution algorithmique, interfaces web et bonnes pratiques de développement logiciel.
 
-* **Langages** : Python, C#
-* **Outils** : Git, Visual Studio Code, .NET
-* **Méthodologies** : Programmation orientée objet, automatisation, scraping, interfaces utilisateur
+---
 
-## 📂 Projets récents
+## 📚 Liste des projets réalisés
 
-### 🧑‍💻 [Interface utilisateur pour une application web Python](https://github.com/SebGris/project-6-user-interface-for-web-application)
+### ✅ Projet 2 – Utilisez les bases de Python pour l'analyse de marché
+📈 Objectif : Collecter et analyser des données en Python pour évaluer un marché.  
+🔧 Outils : `requests`, `BeautifulSoup`, fichiers CSV, boucles et conditions.  
+💡 Exemples : extraction de données depuis un site [Books to Scrape](http://books.toscrape.com/), tri et analyse des livres.
 
-Créer la partie front-end d’une application en utilisant HTML, CSS et JavaScript, et à interagir avec une API REST.
+---
 
-* Fonctionnalités : développer une page web qui permet de visualiser en temps réel des films intéressants.
-* Outils et Langages : Postman, HTML, CSS et JavaScript.
+### ✅ Projet 3 – Designez une application Python adaptée aux besoins d'un client
+🧩 Objectif : Rédiger un cahier des charges pour un logiciel Python en réponse aux besoins d’un client.  
+📄 Travail sur les spécifications fonctionnelles, l’architecture logicielle et les maquettes.  
+💼 Livrable : dossier de conception structuré.
 
-### ♟ [Gestion de tournois d'échecs](https://github.com/SebGris/project-4-chess-tournament)
+---
 
-Application de gestion de tournoi d'échecs développée en Python.
+### ✅ Projet 4 – Développez un programme logiciel en Python
+💻 Objectif : Implémenter une application complète à partir de spécifications.  
+🔧 Outils : programmation orientée objet (POO), fichiers JSON/CSV, gestion d'erreurs.  
+📂 Projet : gestion de données d'entreprise (ou similaire, selon ton projet).
 
-* Fonctionnalités : enregistrement de joueurs, gestion des tours, appariements suisses, classement final.
-* Méthodologies : modèles objets Python, gestion des données avec JSON, logique d'appariement automatique.
+---
 
-### 🧷 [Web Scraping](https://github.com/SebGris/project-2-web-scraping)
+### ✅ Projet 5 – Testez votre maîtrise du langage Python
+🧪 Objectif : Évaluation rapide des connaissances acquises en Python via un quiz interactif.
 
-Un projet d'extraction automatique de données depuis des pages web.
+---
 
-* Fonctionnalités : script Python, exécutable à la demande, visant à récupérer les prix du site [Books to Scrape](http://books.toscrape.com/)
-* Méthodologies : scraping, nettoyage des données, export CSV.
+### ✅ Projet 6 – Développez une interface utilisateur pour une application web Python
+🌐 Objectif : Créer une interface web avec Flask permettant l'interaction utilisateur.  
+🔧 Outils : Flask, Jinja2, HTML/CSS, formulaires web.  
+📲 Projet : interface intuitive pour l’application développée dans un projet précédent.
 
-## 📢 Me contacter
+---
 
+### ✅ Projet 7 – Résolvez des problèmes en utilisant des algorithmes en Python
+🧠 Objectif : Appliquer des algorithmes pour résoudre des problèmes métiers.  
+🔧 Concepts : tris, recherche, complexité, programmation dynamique.  
+💡 Projet : simulation de scénarios ou optimisation de processus.
+
+---
+
+## 📫 Me contacter
+
+**Sébastien Grison**  
+Comptable en reconversion vers le développement Python  
+📍 Noisy-le-Grand  
 * ✉️ Email : [sebastien.grison@ik.me](mailto:sebastien.grison@ik.me)
 * 🔗 [LinkedIn](https://www.linkedin.com/in/sebastien-grison/)
 
 ---
 
-Merci de votre visite ! 👨‍💻
+> Ce portfolio reflète ma progression, mon engagement et ma passion pour le développement logiciel.
