@@ -6,7 +6,7 @@ Bienvenue sur ce dépôt contenant mes 7 premiers projets réalisés dans le cad
 
 ---
 
-## 📚 Liste des projets réalisés
+## 📚 Liste des principaux projets réalisés
 
 ### ✅ Projet 2 – Utilisez les bases de Python pour l'analyse de marché
 📈 Objectif : Collecter et analyser des données en Python pour évaluer un marché.  
@@ -26,11 +26,6 @@ Bienvenue sur ce dépôt contenant mes 7 premiers projets réalisés dans le cad
 💻 Objectif : Implémenter une application complète à partir de spécifications.  
 🔧 Outils : programmation orientée objet (POO), fichiers JSON/CSV, gestion d'erreurs.  
 📂 Projet : gestion de données d'entreprise (ou similaire, selon ton projet).
-
----
-
-### ✅ Projet 5 – Testez votre maîtrise du langage Python
-🧪 Objectif : Évaluation rapide des connaissances acquises en Python via un quiz interactif.
 
 ---
 
