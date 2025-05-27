@@ -75,7 +75,6 @@ Consolidation des compétences en algorithmique avec un focus sur l’efficacit�
 
 **Sébastien Grison**
 📫 N'hésitez pas à me contacter pour discuter de projets ou d'opportunités de collaboration ! 
-Comptable en reconversion vers le développement Python  
 📍 Noisy-le-Grand  
 * ✉️ Email : [sebastien.grison@ik.me](mailto:sebastien.grison@ik.me)
 * 🔗 [LinkedIn](https://www.linkedin.com/in/sebastien-grison/)
