@@ -7,7 +7,7 @@ Ce dépôt présente une sélection de projets réalisés dans le cadre de la fo
 ## 🛠️ Compétences techniques
 
 - **Langages** : Python, C#
-- **Outils** : GitHub, Visual Studio Code, Visual Studio
+- **Outils** : GitHub, Visual Studio Code, Visual Studio, VSTO
 - **Méthodologies** : Programmation orientée objet, automatisation, scraping, interfaces utilisateur
 
 ## 📚 Projets réalisés
