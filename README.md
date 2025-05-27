@@ -11,7 +11,7 @@ Ce dépôt présente une sélection de projets réalisés dans le cadre de la fo
 ### Résumé
 Développement d’un outil de scraping pour analyser le marché des livres en ligne. Le programme extrait automatiquement des données produit à partir d’un site marchand, les structure (ETL) et les enregistre dans un fichier CSV. Les images sont également téléchargées et sauvegardées. Le projet inclut l’envoi d’un rapport professionnel synthétisant le fonctionnement du pipeline de traitement de données.
 
-### Objectifs pédagogiques
+### Objectifs
 - Gérer les données avec le processus ETL
 - Appliquer les bases de la programmation en Python
 - Utiliser le contrôle de version avec Git et GitHub
@@ -24,7 +24,7 @@ Développement d’un outil de scraping pour analyser le marché des livres en l
 ### Résumé
 Réalisation d’une étude de conception technique pour une application Python sur mesure. À partir d’un besoin client, le projet comprend une veille technologique, la rédaction de spécifications fonctionnelles et techniques, la modélisation UML (diagrammes de classes), et l’élaboration d’un backlog produit sous forme de user stories.
 
-### Objectifs pédagogiques
+### Objectifs
 - Définir les exigences fonctionnelles d’une application
 - Gérer un projet avec les méthodologies agiles
 - Concevoir une solution technique à partir d’un besoin client
@@ -37,7 +37,7 @@ Réalisation d’une étude de conception technique pour une application Python 
 ### Résumé
 Création d’un logiciel pour organiser des tournois d’échecs. Le projet met en œuvre la programmation orientée objet et le design pattern MVC pour structurer le code. Le programme est conforme à la norme PEP 8, vérifié avec `flake8`. Ce projet démontre la capacité à produire du code propre, robuste et maintenable dans un contexte applicatif réel.
 
-### Objectifs pédagogiques
+### Objectifs
 - Écrire un code Python robuste en utilisant la PEP 8
 - Structurer le code d'un programme en utilisant un design pattern
 - Utiliser la programmation orientée objet pour développer un logiciel
@@ -49,7 +49,7 @@ Création d’un logiciel pour organiser des tournois d’échecs. Le projet met
 ### Résumé
 Développement de la partie front-end d’une application web avec HTML, CSS et JavaScript. Ce projet consiste à créer une interface utilisateur moderne et fonctionnelle capable d’interagir avec une API REST. Le livrable inclut un repository GitHub contenant tout le code source de l’interface.
 
-### Objectifs pédagogiques
+### Objectifs
 - Développer la partie Front-End d’une application avec HTML, CSS et JavaScript
 - Interagir avec une API REST
 
@@ -60,7 +60,7 @@ Développement de la partie front-end d’une application web avec HTML, CSS et 
 ### Résumé
 Consolidation des compétences en algorithmique avec un focus sur l’efficacité et l’optimisation. Vous apprenez à décomposer un problème complexe, à concevoir d’abord une solution brute-force puis à l’optimiser avec des algorithmes performants, tout en évaluant l’efficacité via la notation Big O. Le projet comprend également un backtesting pour valider les améliorations.
 
-### Objectifs pédagogiques
+### Objectifs
 - Déconstruire un problème complexe
 - Développer un algorithme adapté pour résoudre ce problème
 - Comprendre et appliquer la notation Big O pour analyser la performance
