@@ -74,6 +74,7 @@ Consolidation des compétences en algorithmique avec un focus sur l’efficacit�
 ---
 
 **Sébastien Grison**
+
 📫 N'hésitez pas à me contacter pour discuter de projets ou d'opportunités de collaboration ! 
 📍 Noisy-le-Grand  
 * ✉️ Email : [sebastien.grison@ik.me](mailto:sebastien.grison@ik.me)
