@@ -2,8 +2,6 @@
 
 Ce dépôt présente une sélection de projets réalisés dans le cadre de la formation [Développeur d'application - Python](https://openclassrooms.com/fr/paths/879-developpeur-dapplication-python) sur OpenClassrooms. Chaque projet est conçu pour développer des compétences techniques et professionnelles spécifiques, à travers des cas concrets et progressifs.
 
-## 🎓 Projets OpenClassrooms
-
 ---
 
 ## 🧪 Projet 2 – Utilisez les bases de Python pour l’analyse de marché
