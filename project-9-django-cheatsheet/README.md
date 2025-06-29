@@ -126,6 +126,9 @@ python manage.py createsuperuser
 # Lancer le serveur
 python manage.py runserver
 
+# Tailwind CSS (développement)
+python manage.py tailwind start
+
 ```
 
 ## Bonnes pratiques Django
