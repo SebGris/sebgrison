@@ -73,6 +73,17 @@ Consolidation des compétences en algorithmique avec un focus sur l’efficacit�
 
 ---
 
+### 🌐 [Projet 9 : Développez une application Web en utilisant Django](https://github.com/SebGris/project-9-django-web-LITRevu)
+
+#### Résumé
+Créez une application web avec Django intégrant inscription, connexion, fil d’activité, commentaires et abonnements. Utilisez le rendu côté serveur et respectez les bonnes pratiques Django pour le back-end et la base de données.
+
+#### Objectifs
+- Développer une application web en utilisant Django
+- Utiliser le rendu côté serveur dans Djang
+
+---
+
 **Sébastien Grison**
 
 📫 N'hésitez pas à me contacter pour discuter de projets ou d'opportunités de collaboration ! 
