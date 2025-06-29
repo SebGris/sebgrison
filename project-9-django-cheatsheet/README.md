@@ -129,12 +129,21 @@ python manage.py runserver
 # Tailwind CSS (développement)
 python manage.py tailwind start
 
+# Linting et correction automatique avec Ruff
+ruff check . --fix
+
+# Générer le fichier requirements.txt
+pip freeze > requirements.txt
+
 ```
 
 ## Ressources utiles
 
 ### Tutoriels vidéo
 - [Django : How to Implement a Star Rating & Review Feature | Part 6](https://www.youtube.com/watch?v=AxdEdkeBI0s&ab_channel=ELIE)
+
+### Documentation
+- [Django Tailwind Documentation](https://django-tailwind.readthedocs.io/en/latest/index.html)
 
 ## Bonnes pratiques Django
 
