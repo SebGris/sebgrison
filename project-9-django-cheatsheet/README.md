@@ -2,14 +2,6 @@
 
 ## Configuration initiale
 
-### Installation et setup
-```bash
-pip install django
-django-admin startproject litrevu
-cd litrevu
-python manage.py startapp reviews
-```
-
 ### Settings.py
 ```python
 INSTALLED_APPS = [
@@ -19,7 +11,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'reviews',
+    'authentication',
+    'review',
+    'tailwind',
+    'theme',
+    'django_browser_reload',
 ]
 ```
 
@@ -28,9 +24,14 @@ INSTALLED_APPS = [
 ### User personnalisé
 ```python
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 class User(AbstractUser):
-    pass
+    follows = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        verbose_name='suit'
+    )
 ```
 
 ### Modèles principaux
