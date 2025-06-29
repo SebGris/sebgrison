@@ -131,6 +131,11 @@ python manage.py tailwind start
 
 ```
 
+## Ressources utiles
+
+### Tutoriels vidéo
+- [Django : How to Implement a Star Rating & Review Feature | Part 6](https://www.youtube.com/watch?v=AxdEdkeBI0s&ab_channel=ELIE)
+
 ## Bonnes pratiques Django
 
 - Utiliser `login_required` pour protéger les vues
