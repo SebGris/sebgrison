@@ -126,8 +126,6 @@ python manage.py createsuperuser
 # Lancer le serveur
 python manage.py runserver
 
-# Collecter les fichiers statiques
-python manage.py collectstatic
 ```
 
 ## Bonnes pratiques Django
