@@ -1,5 +1,17 @@
 # 🌐 Projet 9 Django - Aide-mémoire
 
+**📋 Sommaire**
+
+- [Configuration initiale](#configuration-initiale)
+- [Models](#models)
+- [Code expliqué sur les Vues](#code-expliqué-sur-les-vues)
+- [Formulaire personnalisé](#formulaire-personalisé)
+- [URLs](#urls)
+- [Templates de base](#templates-de-base)
+- [Commandes utiles](#commandes-utiles)
+- [Ressources utiles](#ressources-utiles)
+- [Bonnes pratiques Django](#bonnes-pratiques-django)
+
 ## Configuration initiale
 
 ### Settings.py
