@@ -76,7 +76,10 @@ def edit_ticket(request, ticket_id):
     ticket = get_object_or_404(models.Ticket, id=ticket_id)
     # Vérifier que l'utilisateur est bien le propriétaire
     if ticket.user != request.user:
+        return HttpResponseForbidden("Vous n'êtes pas autorisé à modifier ce ticket.")
+    # ...
 ```
+
 #### 1. `@login_required` - Vérification d'**authentification**
 
 ```python
@@ -139,6 +142,7 @@ def create_review(request, ticket_id=None):
                 "Une critique a déjà été publiée pour ce ticket."
             )
             return redirect('flux')
+    # ...
 ```
 
 Je ne trouve pas la fonction ticket.reviews.exists() dans mon code ?
