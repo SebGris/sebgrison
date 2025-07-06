@@ -94,6 +94,17 @@ urlpatterns = [
     path('create-review/', views.create_review, name='create_review'),
 ]
 ```
+Liste des adresses pour test :
+http://127.0.0.1:8000/flux/
+http://127.0.0.1:8000/posts/
+http://127.0.0.1:8000/follow-users/
+
+ticket et review de l'utilisateur TestWireframes :
+http://127.0.0.1:8000/ticket/17/edit/
+http://127.0.0.1:8000/ticket/17/delete/
+http://127.0.0.1:8000/review/12/edit/
+http://127.0.0.1:8000/review/12/delete/
+
 
 ## Templates de base
 
