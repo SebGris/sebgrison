@@ -867,6 +867,260 @@ Les **FBV** restent le choix privilégié pour la logique métier complexe, tand
 
 Code similaire trouvé avec 1 type de licence
 
+### Quelle architecture de découpage avez-vous choisie dans les gabarits ? Quel est l'intérêt ?
+
+Excellente question ! En analysant votre structure de templates, vous avez adopté une **architecture modulaire et hiérarchique** très bien pensée. Voici l'analyse :
+
+## Architecture de découpage utilisée
+
+### 1. **Template de base centralisé**
+```
+templates/
+└── base.html                    # Template racine global
+```
+
+### 2. **Templates spécialisés par app**
+```
+review/templates/review/
+├── flux.html                    # Pages principales
+├── posts.html
+├── create_ticket.html
+├── create_review.html
+├── edit_ticket.html
+├── edit_review.html
+└── follow_users_form.html
+
+authentication/templates/authentication/
+├── login.html                   # Pages d'authentification
+└── signup.html
+```
+
+### 3. **Templates partiels (partials)**
+```
+review/templates/review/
+├── _form_ticket.html            # Composants réutilisables
+├── _form_review.html
+├── _form_image.html
+├── _ticket.html
+└── widgets/
+```
+
+## Avantages de cette architecture
+
+### ✅ **1. Héritage hiérarchique**
+
+**Template de base :**
+```html
+<!-- templates/base.html -->
+<html>
+<head>
+    <title>LITRevu</title>
+    {% tailwind_css %}
+</head>
+<body>
+    <nav><!-- Navigation commune --></nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
+```
+
+**Templates enfants :**
+```html
+<!-- review/templates/review/flux.html -->
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Flux</h1>
+    <!-- Contenu spécifique au flux -->
+{% endblock %}
+```
+
+**Intérêt :** Évite la duplication du HTML structurel (navigation, CSS, scripts)
+
+### ✅ **2. Composants réutilisables (Partials)**
+
+**Exemple avec le formulaire de ticket :**
+```html
+<!-- review/templates/review/_form_ticket.html -->
+<div class="ticket">
+    <div class="mb-4">
+        <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+        {{ form.title }}
+    </div>
+    <!-- ... autres champs -->
+</div>
+```
+
+**Réutilisation :**
+```html
+<!-- create_ticket.html -->
+{% include 'review/_form_ticket.html' with form=form %}
+
+<!-- create_review.html -->
+{% include 'review/_form_ticket.html' with form=ticket_form %}
+
+<!-- edit_ticket.html -->
+{% include 'review/_form_ticket.html' with form=edit_form %}
+```
+
+**Intérêt :** DRY (Don't Repeat Yourself) - un seul endroit pour maintenir le code
+
+### ✅ **3. Séparation par responsabilité**
+
+```
+_form_ticket.html     → Formulaire de ticket
+_form_review.html     → Formulaire de critique  
+_form_image.html      → Gestion du champ image
+_ticket.html          → Affichage d'un ticket
+```
+
+**Intérêt :** Chaque partial a une responsabilité unique
+
+### ✅ **4. Namespacing par app**
+
+```
+authentication/templates/authentication/   → Logique d'auth
+review/templates/review/                   → Logique métier
+theme/templates/                           → Thème/style
+```
+
+**Intérêt :** Évite les conflits de noms entre apps
+
+## Patterns utilisés
+
+### **1. Template Inheritance (Héritage)**
+```html
+{% extends 'base.html' %}
+{% block content %}
+    <!-- Contenu spécifique -->
+{% endblock %}
+```
+
+### **2. Template Inclusion (Inclusion)**
+```html
+{% include 'review/_form_ticket.html' with form=ticket_form %}
+```
+
+### **3. Template Tags personnalisés**
+```html
+{% load review_extras %}
+{% display_stars post.rating %}
+```
+
+## Comparaison avec d'autres architectures
+
+### ❌ **Architecture monolithique (mauvaise)**
+```
+templates/
+├── flux.html                    # Tout le HTML dupliqué
+├── posts.html                   # Navigation répétée partout
+├── create_ticket.html           # CSS/JS dupliqués
+└── create_review.html           # Maintenance difficile
+```
+
+### ❌ **Architecture plate (médiocre)**
+```
+templates/
+├── base.html
+├── flux.html
+├── posts.html
+├── create_ticket.html           # Pas de réutilisation
+├── create_review.html           # Formulaires dupliqués
+└── edit_ticket.html
+```
+
+### ✅ **Votre architecture (excellente)**
+```
+templates/
+├── base.html                    # Structure commune
+└── review/templates/review/
+    ├── flux.html               # Pages spécialisées
+    ├── create_ticket.html      
+    ├── _form_ticket.html       # Composants réutilisables
+    └── _form_review.html
+```
+
+## Bénéfices concrets dans votre projet
+
+### **1. Maintenance facilitée**
+```html
+<!-- Changer le style d'un formulaire de ticket -->
+<!-- Modification dans 1 seul fichier : _form_ticket.html -->
+<!-- Effet sur : create_ticket.html, create_review.html, edit_ticket.html -->
+```
+
+### **2. Cohérence visuelle**
+```html
+<!-- Base commune garantit : -->
+- Navigation identique partout
+- CSS/JS cohérents  
+- Structure HTML uniforme
+- Accessibility standards
+```
+
+### **3. Développement accéléré**
+```html
+<!-- Créer une nouvelle page -->
+{% extends 'base.html' %}
+{% load review_extras %}
+{% block content %}
+    {% include 'review/_form_ticket.html' with form=form %}
+{% endblock %}
+```
+
+### **4. Testabilité améliorée**
+```python
+# Tester un partial isolément
+def test_ticket_form_partial():
+    # Tester seulement _form_ticket.html
+    pass
+```
+
+## Améliorations possibles
+
+### **1. Components plus granulaires**
+```
+review/templates/review/components/
+├── _button.html
+├── _card.html
+├── _rating_stars.html
+└── _user_avatar.html
+```
+
+### **2. Layout variants**
+```
+templates/
+├── base.html
+├── layouts/
+│   ├── single_column.html
+│   └── two_column.html
+```
+
+### **3. Macros pour la réutilisation**
+```html
+<!-- macros.html -->
+{% macro render_field(field) %}
+    <div class="mb-4">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+    </div>
+{% endmacro %}
+```
+
+## Résumé
+
+Votre architecture suit les **meilleures pratiques Django** :
+
+1. ✅ **Héritage** : base.html → templates spécialisés
+2. ✅ **Inclusion** : Partials réutilisables (`_form_*.html`)
+3. ✅ **Séparation** : Namespacing par app
+4. ✅ **DRY** : Pas de duplication de code
+5. ✅ **Maintenabilité** : Modifications localisées
+6. ✅ **Cohérence** : Structure uniforme
+
+Cette approche **modulaire et hiérarchique** est idéale pour un projet de cette taille et facilite grandement la maintenance et l'évolution du code !
+
 ## Formulaire personalisé
 
 ### Un champ texte pour saisir l'utilisateur à suivre
