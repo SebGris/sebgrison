@@ -315,16 +315,28 @@ def flux(request):
     followed_users = models.UserFollows.objects.filter(
         user=request.user
     ).values_list('followed_user', flat=True)
+    
+    # Liste des utilisateurs dont on veut voir le contenu (suivis + soi-même)
+    users_to_show = list(followed_users) + [request.user.id]
+
+    # Annoter les tickets pour savoir s'ils ont déjà une critique
+    reviews_for_tickets = models.Review.objects.filter(ticket=OuterRef('pk'))
+    tickets = models.Ticket.objects.filter(
+        user__id__in=users_to_show
+    ).annotate(
+        post_type=Value('ticket', output_field=CharField()),
+        has_review=Exists(reviews_for_tickets)  # Permet de masquer le bouton
+    )
     # ...
 ```
 
-Que fait objects sur `models.UserFollows` ?
+#### Que fait objects sur `models.UserFollows` ?
 
-#### Qu'est-ce que `objects` ?
+##### Qu'est-ce que `objects` ?
 
 `objects` est un **Manager Django** - c'est l'interface entre votre modèle Python et la base de données. Il fournit tous les méthodes pour effectuer des requêtes SQL.
 
-#### Dans votre code ligne 219 :
+##### Dans votre code ligne 219 :
 
 ```python
 followed_users = models.UserFollows.objects.filter(
@@ -332,14 +344,14 @@ followed_users = models.UserFollows.objects.filter(
 ).values_list('followed_user', flat=True)
 ```
 
-##### Décomposition :
+###### Décomposition :
 
 1. **`models.UserFollows`** = La classe du modèle (table en base)
 2. **`.objects`** = Le manager par défaut de Django
 3. **`.filter(...)`** = Méthode du manager pour filtrer les résultats
 4. **`.values_list(...)`** = Méthode pour récupérer seulement certains champs
 
-#### Équivalent SQL généré :
+##### Équivalent SQL généré :
 
 ```sql
 SELECT followed_user_id 
@@ -347,7 +359,7 @@ FROM review_userfollows
 WHERE user_id = [ID de l'utilisateur connecté];
 ```
 
-#### Autres exemples d'utilisation d'`objects` :
+##### Autres exemples d'utilisation d'`objects` :
 
 ```python
 # Récupérer tous les objets
@@ -369,38 +381,134 @@ models.UserFollows.objects.filter(
 get_object_or_404(UserFollows, user=request.user, followed_user__id=user_id)
 ```
 
-#### Pourquoi `objects` existe-t-il ?
+##### Pourquoi `objects` existe-t-il ?
 
 1. **Abstraction** : Vous écrivez du Python au lieu de SQL
 2. **Sécurité** : Protection automatique contre les injections SQL
 3. **Portabilité** : Fonctionne avec différentes bases de données
 4. **Facilité** : Syntaxe Python intuitive pour les requêtes
 
-#### Manager personnalisé (optionnel)
-
-Vous pourriez même créer votre propre manager :
-
-```python
-class UserFollowsManager(models.Manager):
-    def following_count(self, user):
-        return self.filter(user=user).count()
-    
-    def followers_count(self, user):
-        return self.filter(followed_user=user).count()
-
-class UserFollows(models.Model):
-    # ...vos champs...
-    objects = UserFollowsManager()  # Manager personnalisé
-```
-
-Puis l'utiliser ainsi :
-```python
-following_count = models.UserFollows.objects.following_count(request.user)
-```
-
-#### En résumé
+##### En résumé
 
 `objects` est le **pont automatique** entre votre modèle Python et la base de données - c'est ce qui transforme vos appels de méthodes Python en requêtes SQL optimisées !
+
+#### Explique moi OuterRef `OuterRef`.
+
+##### Qu'est-ce que `OuterRef` ?
+`OuterRef` est un concept avancé de Django pour les requêtes imbriquées (subqueries).
+`OuterRef('pk')` fait référence au **champ `pk` (primary key) du ticket** dans la requête principale (outer query).
+
+##### Décomposition étape par étape :
+
+###### 1. La requête principale (outer) :
+```python
+tickets = models.Ticket.objects.filter(user__id__in=users_to_show)
+```
+Cette requête récupère tous les tickets des utilisateurs suivis.
+
+###### 2. La sous-requête (inner) :
+```python
+reviews_for_tickets = models.Review.objects.filter(ticket=OuterRef('pk'))
+```
+Pour **chaque ticket** de la requête principale, cette sous-requête cherche s'il existe des critiques liées à ce ticket.
+
+###### 3. La combinaison avec `Exists` :
+```python
+has_review=Exists(reviews_for_tickets)
+```
+`Exists()` retourne `True` si la sous-requête trouve au moins une critique, `False` sinon.
+
+##### Équivalent SQL généré :
+
+```sql
+SELECT ticket.*,
+       'ticket' AS post_type,
+       EXISTS(
+           SELECT 1 
+           FROM review_review 
+           WHERE review_review.ticket_id = ticket.id  -- ← OuterRef('pk')
+       ) AS has_review
+FROM review_ticket ticket
+WHERE ticket.user_id IN (1, 2, 3, ...);
+```
+
+##### Analogie simple :
+
+Imaginez que vous avez une liste de livres et vous voulez savoir lesquels ont des critiques :
+
+```python
+# Pour chaque livre (requête externe)
+for livre in tous_les_livres:
+    # Chercher s'il y a des critiques (requête interne)
+    a_des_critiques = existe_critique_pour(livre.id)  # ← OuterRef
+    livre.has_review = a_des_critiques
+```
+
+##### Pourquoi utiliser `OuterRef` ?
+
+###### ❌ Sans `OuterRef` (inefficace) :
+```python
+# Approche naïve : N+1 requêtes !
+for ticket in tickets:
+    ticket.has_review = models.Review.objects.filter(ticket=ticket).exists()
+```
+
+###### ✅ Avec `OuterRef` (efficace) :
+```python
+# Une seule requête SQL complexe
+tickets = tickets.annotate(
+    has_review=Exists(
+        models.Review.objects.filter(ticket=OuterRef('pk'))
+    )
+)
+```
+
+##### Autres exemples d'`OuterRef` :
+
+###### Exemple 1 : Dernier commentaire par article
+```python
+from django.db.models import OuterRef, Subquery
+
+last_comment = Comment.objects.filter(
+    article=OuterRef('pk')
+).order_by('-created').values('content')[:1]
+
+articles = Article.objects.annotate(
+    last_comment_content=Subquery(last_comment)
+)
+```
+
+###### Exemple 2 : Nombre de critiques par ticket
+```python
+review_count = models.Review.objects.filter(
+    ticket=OuterRef('pk')
+).count()
+
+tickets = models.Ticket.objects.annotate(
+    review_count=review_count
+)
+```
+
+##### Dans votre template :
+
+Grâce à `has_review`, vous pouvez maintenant faire :
+
+```html
+{% if not post.has_review %}
+    <a href="{% url 'review-create-for-ticket' post.id %}">
+        <button>Créer une critique</button>
+    </a>
+{% endif %}
+```
+
+##### Résumé :
+
+- **`OuterRef`** = Référence à un champ de la requête principale
+- **Usage typique** = Vérifier l'existence de relations dans des sous-requêtes
+- **Avantage** = Performance (évite les requêtes N+1)
+- **Dans votre cas** = Détermine si un ticket a déjà une critique pour masquer/afficher le bouton
+
+C'est un outil puissant pour optimiser les requêtes complexes en une seule opération SQL !
 
 ## Formulaire personalisé
 
