@@ -69,6 +69,114 @@ def signup_page(request):
     return render(request, 'authentication/signup.html', context=context)
 ```
 
+Quel est la différence entre `redirect` et `render` ?
+
+## `render` - Affichage d'une page
+
+### Utilisation :
+```python
+return render(request, 'template.html', context={'data': value})
+```
+
+### Ce qui se passe :
+1. **Génère une page HTML** à partir d'un template
+2. **Renvoie directement** cette page au navigateur
+3. **L'URL reste la même** dans la barre d'adresse
+4. **Code de statut HTTP : 200** (OK)
+
+### Exemple dans votre code :
+```python
+return render(request, 'review/create_ticket.html', context={'form': form})
+```
+→ Affiche le formulaire de création de ticket sur `/ticket/create/`
+
+## `redirect` - Redirection vers une autre page
+
+### Utilisation :
+```python
+return redirect('nom-de-lurl')  # ou redirect('/url/absolue/')
+```
+
+### Ce qui se passe :
+1. **N'affiche PAS de contenu**
+2. **Indique au navigateur** d'aller vers une autre URL
+3. **L'URL change** dans la barre d'adresse
+4. **Code de statut HTTP : 302** (Redirection temporaire)
+5. **Le navigateur fait une nouvelle requête**
+
+### Exemple dans votre code :
+```python
+return redirect('flux')
+```
+→ Redirige vers la page du flux (nouvelle URL : `/flux/`)
+
+## Comparaison pratique avec vos exemples :
+
+### Cas 1 : Formulaire invalide (affichage)
+```python
+# GET ou formulaire invalide → AFFICHER la page
+return render(request, 'review/create_ticket.html', context={'form': form})
+```
+- L'utilisateur voit le formulaire (avec erreurs éventuelles)
+- URL : `/ticket/create/`
+
+### Cas 2 : Formulaire valide (redirection)
+```python
+# POST valide → REDIRIGER vers le flux
+messages.success(request, "Ticket créé avec succès !")
+return redirect('flux')
+```
+- L'utilisateur est redirigé vers `/flux/`
+- Il voit le message de succès là-bas
+
+## Pourquoi cette distinction est importante ?
+
+### **Pattern PRG (Post-Redirect-Get)**
+```python
+if request.method == 'POST':
+    if form.is_valid():
+        # Traitement des données
+        return redirect('success-page')  # ← REDIRECTION après POST
+    else:
+        # Erreurs dans le formulaire
+        return render(request, 'form.html', {'form': form})  # ← AFFICHAGE
+else:
+    # GET initial
+    return render(request, 'form.html', {'form': form})  # ← AFFICHAGE
+```
+
+### Avantages du pattern PRG :
+1. **Évite la double soumission** si l'utilisateur actualise la page
+2. **URL propre** après soumission réussie
+3. **Messages temporaires** fonctionnent correctement
+
+## Résumé des différences :
+
+| Aspect | `render` | `redirect` |
+|--------|----------|------------|
+| **Action** | Affiche une page | Redirige vers une autre URL |
+| **URL** | Reste identique | Change |
+| **Template** | Obligatoire | Aucun |
+| **Contexte** | Peut passer des données | Aucun (utiliser messages) |
+| **Code HTTP** | 200 (OK) | 302 (Redirection) |
+| **Usage type** | Affichage de formulaires, listes | Après POST réussi, changement de page |
+
+## Erreur courante à éviter :
+
+```python
+# ❌ MAUVAIS - render après POST réussi
+if form.is_valid():
+    form.save()
+    return render(request, 'success.html')  # URL reste sur /create/
+
+# ✅ BON - redirect après POST réussi  
+if form.is_valid():
+    form.save()
+    return redirect('success-page')  # URL change vers /success/
+```
+
+Cette distinction est fondamentale pour une bonne architecture web Django !
+
 ### Vue pour modifier un ticket existant.
 ```python
 @login_required
@@ -145,7 +253,7 @@ def create_review(request, ticket_id=None):
     # ...
 ```
 
-Je ne trouve pas la fonction ticket.reviews.exists() dans mon code ?
+Je ne trouve pas la fonction `ticket.reviews.exists()` dans mon code ?
 
 La méthode `ticket.reviews.exists()` n'est pas définie explicitement dans votre code, car elle provient d'une **relation Django automatique**.
 
@@ -210,7 +318,7 @@ def flux(request):
     # ...
 ```
 
-Que fait objects sur models.UserFollows ?
+Que fait objects sur `models.UserFollows` ?
 
 #### Qu'est-ce que `objects` ?
 
