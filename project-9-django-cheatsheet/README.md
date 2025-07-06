@@ -4,12 +4,21 @@
 
 - [Configuration initiale](#configuration-initiale)
 - [Models](#models)
+  - [User personnalisé](#user-personnalisé)
+  - [Modèles principaux](#modèles-principaux)
 - [Code expliqué sur les Vues](#code-expliqué-sur-les-vues)
+  - [Authentification](#authentification)
+  - [Vue pour modifier un ticket existant](#vue-pour-modifier-un-ticket-existant)
+  - [Vue pour créer un nouveau ticket](#vue-pour-créer-un-nouveau-ticket)
+  - [Vue pour créer une critique](#vue-pour-créer-une-critique)
+  - [Vue principale du flux d'activité](#vue-principale-du-flux-dactivité)
 - [Formulaire personnalisé](#formulaire-personalisé)
 - [URLs](#urls)
 - [Templates de base](#templates-de-base)
 - [Commandes utiles](#commandes-utiles)
 - [Ressources utiles](#ressources-utiles)
+  - [Tutoriels vidéo](#tutoriels-vidéo)
+  - [Documentation](#documentation)
 - [Bonnes pratiques Django](#bonnes-pratiques-django)
 
 ## Configuration initiale
