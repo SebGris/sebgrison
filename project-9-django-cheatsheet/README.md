@@ -392,9 +392,7 @@ get_object_or_404(UserFollows, user=request.user, followed_user__id=user_id)
 
 `objects` est le **pont automatique** entre votre modèle Python et la base de données - c'est ce qui transforme vos appels de méthodes Python en requêtes SQL optimisées !
 
-#### Explique moi `OuterRef`.
-
-##### Qu'est-ce que `OuterRef` ?
+#### Qu'est-ce que `OuterRef` ?
 `OuterRef` est un concept avancé de Django pour les requêtes imbriquées (subqueries).
 `OuterRef('pk')` fait référence au **champ `pk` (primary key) du ticket** dans la requête principale (outer query).
 
