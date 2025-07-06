@@ -82,7 +82,7 @@ def create_ticket(request):
     return render(request, 'reviews/create_ticket.html', {'form': form})
 ```
 
-### Un simple champ texte pour saisir l'utilisateur à suivre
+### Un champ texte pour saisir l'utilisateur à suivre
 
 ```python
 class FollowUsersForm(forms.Form):
@@ -97,7 +97,7 @@ class FollowUsersForm(forms.Form):
     )
 ```
 
-### Une liste déroulante pour saisir l'utilisateur à suivre
+### Ou une liste déroulante pour sélectionner l'utilisateur à suivre
 
 ```python
 class FollowUsersForm(forms.Form):
