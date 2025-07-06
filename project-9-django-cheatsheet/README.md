@@ -69,7 +69,7 @@ def signup_page(request):
     return render(request, 'authentication/signup.html', context=context)
 ```
 
-### Vue créer un nouveau ticket
+### Vue pour créer un nouveau ticket
 ```python
 @login_required
 def create_ticket(request):
