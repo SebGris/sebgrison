@@ -69,6 +69,44 @@ def signup_page(request):
     return render(request, 'authentication/signup.html', context=context)
 ```
 
+### Vue pour modifier un ticket existant.
+```python
+@login_required
+def edit_ticket(request, ticket_id):
+    ticket = get_object_or_404(models.Ticket, id=ticket_id)
+    # Vérifier que l'utilisateur est bien le propriétaire
+    if ticket.user != request.user:
+```
+#### 1. `@login_required` - Vérification d'**authentification**
+
+```python
+@login_required
+def edit_ticket(request, ticket_id):
+```
+
+Ce décorateur s'assure que l'utilisateur est **connecté** (authentifié). Si l'utilisateur n'est pas connecté :
+- Il est redirigé vers la page de connexion
+- La vue n'est jamais exécutée
+- `request.user` serait un objet `AnonymousUser`
+
+#### 2. `if ticket.user != request.user:` - Vérification d'**autorisation**
+
+```python
+if ticket.user != request.user:
+    return HttpResponseForbidden(
+        "Vous n'êtes pas autorisé à modifier ce ticket."
+    )
+```
+
+Cette vérification s'assure que l'utilisateur connecté est **autorisé** à modifier ce ticket spécifique. Sans cette vérification :
+- N'importe quel utilisateur connecté pourrait modifier n'importe quel ticket
+- Il suffirait de connaître l'ID d'un ticket pour le modifier
+
+#### En résumé
+
+- **`@login_required`** = "Es-tu connecté ?" (Authentification)
+- **`if ticket.user != request.user:`** = "Es-tu le propriétaire ?" (Autorisation)
+
 ### Vue pour créer un nouveau ticket
 ```python
 @login_required
