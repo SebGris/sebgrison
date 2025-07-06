@@ -81,6 +81,7 @@ def create_ticket(request):
         form = TicketForm()
     return render(request, 'reviews/create_ticket.html', {'form': form})
 ```
+
 ### Un simple champ texte pour saisir l'utilisateur à suivre
 
 ```python
