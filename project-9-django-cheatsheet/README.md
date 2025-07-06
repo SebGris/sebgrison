@@ -52,7 +52,7 @@ class Review(models.Model):
     time_created = models.DateTimeField(auto_now_add=True)
 ```
 
-## Vues importantes
+## Code expliqué sur les Vues
 
 ### Authentification
 ```python
@@ -69,50 +69,50 @@ def signup_page(request):
     return render(request, 'authentication/signup.html', context=context)
 ```
 
-Quel est la différence entre `redirect` et `render` ?
+#### Quel est la différence entre `redirect` et `render` ?
 
-## `render` - Affichage d'une page
+##### `render` - Affichage d'une page
 
-### Utilisation :
+###### Utilisation :
 ```python
 return render(request, 'template.html', context={'data': value})
 ```
 
-### Ce qui se passe :
+###### Ce qui se passe :
 1. **Génère une page HTML** à partir d'un template
 2. **Renvoie directement** cette page au navigateur
 3. **L'URL reste la même** dans la barre d'adresse
 4. **Code de statut HTTP : 200** (OK)
 
-### Exemple dans votre code :
+###### Exemple dans le code :
 ```python
 return render(request, 'review/create_ticket.html', context={'form': form})
 ```
 → Affiche le formulaire de création de ticket sur `/ticket/create/`
 
-## `redirect` - Redirection vers une autre page
+##### `redirect` - Redirection vers une autre page
 
-### Utilisation :
+###### Utilisation :
 ```python
 return redirect('nom-de-lurl')  # ou redirect('/url/absolue/')
 ```
 
-### Ce qui se passe :
+###### Ce qui se passe :
 1. **N'affiche PAS de contenu**
 2. **Indique au navigateur** d'aller vers une autre URL
 3. **L'URL change** dans la barre d'adresse
 4. **Code de statut HTTP : 302** (Redirection temporaire)
 5. **Le navigateur fait une nouvelle requête**
 
-### Exemple dans votre code :
+###### Exemple dans le code :
 ```python
 return redirect('flux')
 ```
 → Redirige vers la page du flux (nouvelle URL : `/flux/`)
 
-## Comparaison pratique avec vos exemples :
+##### Comparaison pratique :
 
-### Cas 1 : Formulaire invalide (affichage)
+###### Cas 1 : Formulaire invalide (affichage)
 ```python
 # GET ou formulaire invalide → AFFICHER la page
 return render(request, 'review/create_ticket.html', context={'form': form})
@@ -120,7 +120,7 @@ return render(request, 'review/create_ticket.html', context={'form': form})
 - L'utilisateur voit le formulaire (avec erreurs éventuelles)
 - URL : `/ticket/create/`
 
-### Cas 2 : Formulaire valide (redirection)
+###### Cas 2 : Formulaire valide (redirection)
 ```python
 # POST valide → REDIRIGER vers le flux
 messages.success(request, "Ticket créé avec succès !")
@@ -129,9 +129,9 @@ return redirect('flux')
 - L'utilisateur est redirigé vers `/flux/`
 - Il voit le message de succès là-bas
 
-## Pourquoi cette distinction est importante ?
+##### Pourquoi cette distinction est importante ?
 
-### **Pattern PRG (Post-Redirect-Get)**
+###### **Pattern PRG (Post-Redirect-Get)**
 ```python
 if request.method == 'POST':
     if form.is_valid():
@@ -145,12 +145,12 @@ else:
     return render(request, 'form.html', {'form': form})  # ← AFFICHAGE
 ```
 
-### Avantages du pattern PRG :
+###### Avantages du pattern PRG :
 1. **Évite la double soumission** si l'utilisateur actualise la page
 2. **URL propre** après soumission réussie
 3. **Messages temporaires** fonctionnent correctement
 
-## Résumé des différences :
+##### Résumé des différences :
 
 | Aspect | `render` | `redirect` |
 |--------|----------|------------|
@@ -161,7 +161,7 @@ else:
 | **Code HTTP** | 200 (OK) | 302 (Redirection) |
 | **Usage type** | Affichage de formulaires, listes | Après POST réussi, changement de page |
 
-## Erreur courante à éviter :
+##### Erreur courante à éviter :
 
 ```python
 # ❌ MAUVAIS - render après POST réussi
