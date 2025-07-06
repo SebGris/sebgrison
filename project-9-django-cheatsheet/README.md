@@ -144,6 +144,7 @@ urlpatterns = [
 ]
 ```
 Liste des adresses pour test :
+http://127.0.0.1:8000/signup/
 http://127.0.0.1:8000/flux/
 http://127.0.0.1:8000/posts/
 http://127.0.0.1:8000/follow-users/
