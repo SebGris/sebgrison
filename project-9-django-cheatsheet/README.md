@@ -107,9 +107,9 @@ Je ne trouve pas la fonction ticket.reviews.exists() dans mon code ?
 
 La méthode `ticket.reviews.exists()` n'est pas définie explicitement dans votre code, car elle provient d'une **relation Django automatique**.
 
-## 🔍 **Explication :**
+#### 🔍 **Explication :**
 
-### 📋 **Dans votre modèle Review :**
+##### 📋 **Dans votre modèle Review :**
 ```python
 class Review(models.Model):
     # ...
@@ -117,13 +117,13 @@ class Review(models.Model):
     # ...
 ```
 
-### 🔄 **Django crée automatiquement la relation inverse :**
+##### 🔄 **Django crée automatiquement la relation inverse :**
 
 Quand vous définissez une `ForeignKey` dans Review vers `Ticket`, Django crée **automatiquement** :
 - `review.ticket` (relation directe)
 - `ticket.reviews` (relation inverse - **manager automatique**)
 
-### 🎯 **La relation `ticket.reviews` :**
+##### 🎯 **La relation `ticket.reviews` :**
 
 ```python
 # Django crée automatiquement cette relation :
@@ -132,7 +132,7 @@ Quand vous définissez une `ForeignKey` dans Review vers `Ticket`, Django crée 
 
 Par défaut, Django nomme la relation inverse : `<nom_du_modèle_en_minuscule>_set` ou juste `<nom_du_modèle_en_minuscule>s`.
 
-### 📖 **Méthodes disponibles sur `ticket.reviews` :**
+##### 📖 **Méthodes disponibles sur `ticket.reviews` :**
 
 ```python
 ticket.reviews.all()         # Toutes les critiques du ticket
@@ -142,7 +142,7 @@ ticket.reviews.filter(...)   # Filtrer les critiques
 ticket.reviews.create(...)   # Créer une nouvelle critique
 ```
 
-### 🔧 **Si vous voulez personnaliser le nom :**
+##### 🔧 **Si vous voulez personnaliser le nom :**
 
 ```python
 class Review(models.Model):
