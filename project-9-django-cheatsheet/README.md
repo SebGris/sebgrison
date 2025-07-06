@@ -19,7 +19,6 @@
 - [Ressources utiles](#ressources-utiles)
   - [Tutoriels vidéo](#tutoriels-vidéo)
   - [Documentation](#documentation)
-- [Bonnes pratiques Django](#bonnes-pratiques-django)
 
 ## Configuration initiale
 
@@ -820,12 +819,5 @@ pip freeze > requirements.txt
 ### Documentation
 - [Django Tailwind Documentation](https://django-tailwind.readthedocs.io/en/latest/index.html)
 
-## Bonnes pratiques Django
-
-- Utiliser `login_required` pour protéger les vues
-- Valider les données avec les formulaires Django
-- Utiliser les templates pour éviter la répétition
-- Séparer la logique métier dans les models
-- Gérer les médias et fichiers statiques correctement
 
 https://github.com/SebGris/sebgrison/tree/main/project-9-django-cheatsheet
