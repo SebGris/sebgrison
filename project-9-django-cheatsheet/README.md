@@ -81,6 +81,54 @@ def create_ticket(request):
         form = TicketForm()
     return render(request, 'reviews/create_ticket.html', {'form': form})
 ```
+### Un simple champ texte pour saisir l'utilisateur à suivre
+
+```python
+class FollowUsersForm(forms.Form):
+    username = forms.CharField(
+        label="Nom d'utilisateur",
+        max_length=150,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'style': 'border:2px solid #333;',
+            'placeholder': 'Entrez le nom d\'utilisateur'
+        })
+    )
+```
+
+### Une liste déroulante pour saisir l'utilisateur à suivre
+
+```python
+class FollowUsersForm(forms.Form):
+    username = forms.ChoiceField(
+        label="Nom d'utilisateur",
+        choices=[],
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'style': 'border:2px solid #333;'
+        })
+    )
+
+    def __init__(self, *args, **kwargs):
+        # Extraire l'utilisateur des kwargs avant d'appeler super()
+        current_user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        User = get_user_model()
+
+        # Exclure l'utilisateur courant et ceux déjà suivis
+        users_qs = User.objects.all()
+        if current_user:
+            users_qs = users_qs.exclude(pk=current_user.pk)
+            already_followed = UserFollows.objects.filter(
+                user=current_user
+            ).values_list('followed_user', flat=True)
+            users_qs = users_qs.exclude(pk__in=already_followed)
+        self.fields['username'].choices = [
+            ('', '--- Sélectionnez un utilisateur ---')
+        ] + [
+            (user.username, user.username) for user in users_qs
+        ]
+```
 
 ## URLs
 
