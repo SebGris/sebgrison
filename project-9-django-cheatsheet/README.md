@@ -56,31 +56,108 @@ class Review(models.Model):
 
 ### Authentification
 ```python
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.decorators import login_required
-
-@login_required
-def feed(request):
-    # Logique du fil d'actualité
-    pass
+def signup_page(request):
+    form = forms.SignupForm()
+    if request.method == 'POST':
+        form = forms.SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # auto-login user
+            login(request, user)
+            return redirect(settings.LOGIN_REDIRECT_URL)
+    context = {'form': form}
+    return render(request, 'authentication/signup.html', context=context)
 ```
 
-### Gestion des formulaires
+### Vue créer un nouveau ticket
 ```python
-from django.shortcuts import render, redirect
-
+@login_required
 def create_ticket(request):
+    form = forms.TicketForm()
     if request.method == 'POST':
-        form = TicketForm(request.POST, request.FILES)
+        form = forms.TicketForm(request.POST, request.FILES)
         if form.is_valid():
+            # Associer le ticket à l'utilisateur connecté
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
-            return redirect('feed')
-    else:
-        form = TicketForm()
-    return render(request, 'reviews/create_ticket.html', {'form': form})
+            messages.success(request, "Ticket créé avec succès !")
+            return redirect('flux')
+    return render(request, 'review/create_ticket.html', context={'form': form})
 ```
+
+### Vue pour créer une critique
+```python
+@login_required
+def create_review(request, ticket_id=None):
+    if ticket_id:
+        # Cas 1: Critique en réponse à un ticket existant
+        ticket = get_object_or_404(models.Ticket, id=ticket_id)
+
+        # Vérifier qu'aucune critique n'existe déjà pour ce ticket
+        if ticket.reviews.exists():
+            messages.error(
+                request,
+                "Une critique a déjà été publiée pour ce ticket."
+            )
+            return redirect('flux')
+```
+
+Je ne trouve pas la fonction ticket.reviews.exists() dans mon code ?
+
+La méthode `ticket.reviews.exists()` n'est pas définie explicitement dans votre code, car elle provient d'une **relation Django automatique**.
+
+## 🔍 **Explication :**
+
+### 📋 **Dans votre modèle Review :**
+```python
+class Review(models.Model):
+    # ...
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    # ...
+```
+
+### 🔄 **Django crée automatiquement la relation inverse :**
+
+Quand vous définissez une `ForeignKey` dans Review vers `Ticket`, Django crée **automatiquement** :
+- `review.ticket` (relation directe)
+- `ticket.reviews` (relation inverse - **manager automatique**)
+
+### 🎯 **La relation `ticket.reviews` :**
+
+```python
+# Django crée automatiquement cette relation :
+# ticket.reviews -> RelatedManager pour Review
+```
+
+Par défaut, Django nomme la relation inverse : `<nom_du_modèle_en_minuscule>_set` ou juste `<nom_du_modèle_en_minuscule>s`.
+
+### 📖 **Méthodes disponibles sur `ticket.reviews` :**
+
+```python
+ticket.reviews.all()         # Toutes les critiques du ticket
+ticket.reviews.exists()      # True si au moins une critique existe
+ticket.reviews.count()       # Nombre de critiques
+ticket.reviews.filter(...)   # Filtrer les critiques
+ticket.reviews.create(...)   # Créer une nouvelle critique
+```
+
+### 🔧 **Si vous voulez personnaliser le nom :**
+
+```python
+class Review(models.Model):
+    ticket = models.ForeignKey(
+        Ticket, 
+        on_delete=models.CASCADE,
+        related_name='critiques'  # Personnaliser le nom
+    )
+```
+
+Alors vous pourriez utiliser `ticket.critiques.exists()` au lieu de `ticket.reviews.exists()`.
+
+**C'est la magie des relations Django !** 🪄 La relation inverse est créée automatiquement sans que vous ayez besoin de l'écrire explicitement.
+
+## Formulaire personalisé
 
 ### Un champ texte pour saisir l'utilisateur à suivre
 
