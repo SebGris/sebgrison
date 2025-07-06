@@ -330,13 +330,13 @@ def flux(request):
     # ...
 ```
 
-#### Que fait objects sur `models.UserFollows` ?
+#### Que fait `objects` sur `models.UserFollows` ?
 
 ##### Qu'est-ce que `objects` ?
 
 `objects` est un **Manager Django** - c'est l'interface entre votre modèle Python et la base de données. Il fournit tous les méthodes pour effectuer des requêtes SQL.
 
-##### Dans votre code ligne 219 :
+##### Dans le code :
 
 ```python
 followed_users = models.UserFollows.objects.filter(
@@ -392,7 +392,7 @@ get_object_or_404(UserFollows, user=request.user, followed_user__id=user_id)
 
 `objects` est le **pont automatique** entre votre modèle Python et la base de données - c'est ce qui transforme vos appels de méthodes Python en requêtes SQL optimisées !
 
-#### Explique moi OuterRef `OuterRef`.
+#### Explique moi `OuterRef`.
 
 ##### Qu'est-ce que `OuterRef` ?
 `OuterRef` est un concept avancé de Django pour les requêtes imbriquées (subqueries).
