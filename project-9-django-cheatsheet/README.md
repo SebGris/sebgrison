@@ -199,6 +199,101 @@ Alors vous pourriez utiliser `ticket.critiques.exists()` au lieu de `ticket.revi
 
 **C'est la magie des relations Django !** 🪄 La relation inverse est créée automatiquement sans que vous ayez besoin de l'écrire explicitement.
 
+### Vue principale du flux d'activité.
+```python
+@login_required
+def flux(request):
+    # Récupérer les utilisateurs suivis par l'utilisateur connecté
+    followed_users = models.UserFollows.objects.filter(
+        user=request.user
+    ).values_list('followed_user', flat=True)
+    # ...
+```
+
+Que fait objects sur models.UserFollows ?
+
+#### Qu'est-ce que `objects` ?
+
+`objects` est un **Manager Django** - c'est l'interface entre votre modèle Python et la base de données. Il fournit tous les méthodes pour effectuer des requêtes SQL.
+
+#### Dans votre code ligne 219 :
+
+```python
+followed_users = models.UserFollows.objects.filter(
+    user=request.user
+).values_list('followed_user', flat=True)
+```
+
+##### Décomposition :
+
+1. **`models.UserFollows`** = La classe du modèle (table en base)
+2. **`.objects`** = Le manager par défaut de Django
+3. **`.filter(...)`** = Méthode du manager pour filtrer les résultats
+4. **`.values_list(...)`** = Méthode pour récupérer seulement certains champs
+
+#### Équivalent SQL généré :
+
+```sql
+SELECT followed_user_id 
+FROM review_userfollows 
+WHERE user_id = [ID de l'utilisateur connecté];
+```
+
+#### Autres exemples d'utilisation d'`objects` :
+
+```python
+# Récupérer tous les objets
+models.UserFollows.objects.all()
+
+# Créer un nouvel objet
+models.UserFollows.objects.create(
+    user=request.user,
+    followed_user=user_to_follow
+)
+
+# Filtrer avec conditions
+models.UserFollows.objects.filter(
+    user=request.user,
+    followed_user=user_to_follow
+).exists()
+
+# Récupérer un objet unique
+get_object_or_404(UserFollows, user=request.user, followed_user__id=user_id)
+```
+
+#### Pourquoi `objects` existe-t-il ?
+
+1. **Abstraction** : Vous écrivez du Python au lieu de SQL
+2. **Sécurité** : Protection automatique contre les injections SQL
+3. **Portabilité** : Fonctionne avec différentes bases de données
+4. **Facilité** : Syntaxe Python intuitive pour les requêtes
+
+#### Manager personnalisé (optionnel)
+
+Vous pourriez même créer votre propre manager :
+
+```python
+class UserFollowsManager(models.Manager):
+    def following_count(self, user):
+        return self.filter(user=user).count()
+    
+    def followers_count(self, user):
+        return self.filter(followed_user=user).count()
+
+class UserFollows(models.Model):
+    # ...vos champs...
+    objects = UserFollowsManager()  # Manager personnalisé
+```
+
+Puis l'utiliser ainsi :
+```python
+following_count = models.UserFollows.objects.following_count(request.user)
+```
+
+#### En résumé
+
+`objects` est le **pont automatique** entre votre modèle Python et la base de données - c'est ce qui transforme vos appels de méthodes Python en requêtes SQL optimisées !
+
 ## Formulaire personalisé
 
 ### Un champ texte pour saisir l'utilisateur à suivre
@@ -332,3 +427,5 @@ pip freeze > requirements.txt
 - Utiliser les templates pour éviter la répétition
 - Séparer la logique métier dans les models
 - Gérer les médias et fichiers statiques correctement
+
+https://github.com/SebGris/sebgrison/tree/main/project-9-django-cheatsheet
