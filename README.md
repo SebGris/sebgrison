@@ -80,7 +80,7 @@ Créez une application web avec Django intégrant inscription, connexion, fil d�
 
 #### Objectifs
 - Développer une application web en utilisant Django
-- Utiliser le rendu côté serveur dans Djang
+- Utiliser le rendu côté serveur dans Django
 
 ---
 
