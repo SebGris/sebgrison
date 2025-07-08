@@ -77,7 +77,7 @@ python manage.py runserver
 Ouvrez http://127.0.0.1:8000/ dans votre navigateur pour vérifier que le site Django fonctionne.
 Tapez Ctrl+C pour arrêter le serveur.
 
-### **Étape 7 : Activer l'authentification DRF**
+### **Étape 6 : Activer l'authentification DRF**
 
 Ajoutez l'authentification Django REST Framework dans le fichier `urls.py` principal du projet :
 
