@@ -35,6 +35,46 @@ Après installation, mettez à jour le fichier requirements.txt avec toutes les 
 pip freeze > requirements.txt
 ```
 
+### **Étape 5 : Créer une application Django**
+
+Créez un nouveau projet Django :
+```bash
+django-admin startproject softdesk_support
+```
+
+#### Exécutez le serveur de développement
+```bash
+cd softdesk_support
+python manage.py startapp issues
+```
+L'utilitaire nous indique que le serveur de développement a démarré à l'adresse http://127.0.0.1:8000/. Ouvrir cette adresse dans le navigateur pour vérifier que le site Django fonctionne.
+
+#### Créez la base de données du projet
+Tapez Ctrl-C pour arrêter le serveur et revenir à une invite. Exécutez la sous-commande `migrate`:
+```bash
+python manage.py migrate
+```
+
+#### Créer une application
+Puis créez une application dans le projet :
+```bash
+python manage.py startapp issues
+```
+
+N'oubliez pas d'ajouter votre application dans `settings.py` :
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',  # Django REST Framework
+    'nom_de_lapp',     # Votre application
+]
+```
+
 ## 🔧 **Commandes de dépannage**
 
 ### **En cas de problème**
