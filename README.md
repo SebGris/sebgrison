@@ -25,7 +25,7 @@ Développement d’un outil de scraping pour analyser le marché des livres en l
 
 ---
 
-### 🛠 Projet 3 : Designez une application Python adaptée aux besoins d'un client
+### 🛠 Projet 3 : Concevez une application Python adaptée aux besoins d'un client
 
 #### Résumé
 Réalisation d’une étude de conception technique pour une application Python sur mesure. À partir d’un besoin client, le projet comprend une veille technologique, la rédaction de spécifications fonctionnelles et techniques, la modélisation UML (diagrammes de classes), et l’élaboration d’un backlog produit sous forme de user stories.
