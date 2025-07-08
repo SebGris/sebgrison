@@ -40,27 +40,22 @@ pip freeze > requirements.txt
 Créez un nouveau projet Django :
 ```bash
 django-admin startproject softdesk_support
-```
-
-#### Exécutez le serveur de développement
-```bash
 cd softdesk_support
-python manage.py startapp issues
 ```
-L'utilitaire nous indique que le serveur de développement a démarré à l'adresse http://127.0.0.1:8000/. Ouvrir cette adresse dans le navigateur pour vérifier que le site Django fonctionne.
 
-#### Créez la base de données du projet
-Tapez Ctrl-C pour arrêter le serveur et revenir à une invite. Exécutez la sous-commande `migrate`:
+#### Créer la base de données du projet
+Appliquez les migrations initiales :
 ```bash
 python manage.py migrate
 ```
 
 #### Créer une application
-Puis créez une application dans le projet :
+Créez une application dans le projet :
 ```bash
 python manage.py startapp issues
 ```
 
+#### Configurer l'application
 N'oubliez pas d'ajouter votre application dans `settings.py` :
 ```python
 INSTALLED_APPS = [
@@ -71,9 +66,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',  # Django REST Framework
-    'nom_de_lapp',     # Votre application
+    'issues',          # Votre application
 ]
 ```
+
+#### Tester le serveur de développement
+Démarrez le serveur pour vérifier que tout fonctionne :
+```bash
+python manage.py runserver
+```
+Ouvrez http://127.0.0.1:8000/ dans votre navigateur pour vérifier que le site Django fonctionne.
+Tapez Ctrl+C pour arrêter le serveur.
 
 ## 🔧 **Commandes de dépannage**
 
