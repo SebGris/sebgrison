@@ -1681,7 +1681,7 @@ runserver     # 30 secondes
 5. Vérifier l'accessibilité
 ```
 
-## 🔧 **Commandes de dépannage (de votre README)**
+## 🔧 **Commandes de dépannage**
 
 ### **En cas de problème**
 ```bash
