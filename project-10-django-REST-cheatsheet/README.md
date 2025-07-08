@@ -1,7 +1,6 @@
 # 🌐 Projet 10 Django REST - Aide-mémoire
 
 ## Installation à partir de zéro
-
 ### **Étape 1 : Créer le fichier requirements.txt**
 
 ```txt
@@ -77,6 +76,22 @@ python manage.py runserver
 ```
 Ouvrez http://127.0.0.1:8000/ dans votre navigateur pour vérifier que le site Django fonctionne.
 Tapez Ctrl+C pour arrêter le serveur.
+
+### **Étape 7 : Activer l'authentification DRF**
+
+Ajoutez l'authentification Django REST Framework dans le fichier `urls.py` principal du projet :
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),
+]
+```
+
+Cette configuration permet d'utiliser l'interface d'authentification web de DRF accessible à l'adresse http://127.0.0.1:8000/api-auth/login/
 
 ## 🔧 **Commandes de dépannage**
 
