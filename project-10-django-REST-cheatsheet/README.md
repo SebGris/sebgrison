@@ -22,3 +22,4 @@ Après cela, vous pourrez utiliser directement `pipx` au lieu de `python -m pipx
 
 - [Poetry le gestionnaire de dépendances Python moderne](https://blog.stephane-robert.info/docs/developper/programmation/python/poetry/)
 - [pipx — Install and Run Python Applications in Isolated Environments](https://pipx.pypa.io/stable/)
+- [Poetry — Installation](https://python-poetry.org/docs/#installing-with-pipx)
