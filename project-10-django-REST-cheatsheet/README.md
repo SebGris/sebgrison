@@ -36,12 +36,11 @@ Poetry configure tout pour vous, générant un fichier `pyproject.toml` pour cen
 poetry init
 ```
 Vous serez guidé à travers une série de questions interactives :
-
-    Nom du projet
-    Version initiale
-    Description
-    Auteur(s)
-    Dépendances et compatibilité Python
+- Nom du projet
+- Version initiale
+- Description
+- Auteur(s)
+- Dépendances et compatibilité Python
 
 Si vous préférez sauter les questions, utilisez l’option `--no-interaction` pour une initialisation rapide avec des valeurs par défaut.
 ```bash
