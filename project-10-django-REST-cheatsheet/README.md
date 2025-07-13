@@ -23,6 +23,12 @@ Après cela, vous pourrez utiliser directement `pipx` au lieu de `python -m pipx
 pipx install poetry
 ```
 
+### **Étape 4 : Vérification de l’installation**
+
+```bash
+poetry --version
+```
+
 ## 📄 Aide
 
 - [Poetry le gestionnaire de dépendances Python moderne](https://blog.stephane-robert.info/docs/developper/programmation/python/poetry/)
