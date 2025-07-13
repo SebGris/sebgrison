@@ -17,6 +17,11 @@ python -m pipx ensurepath
 
 Après cela, vous pourrez utiliser directement `pipx` au lieu de `python -m pipx`.
 
+### **Étape 3 : Installation de Poetry**
+
+```bash
+pipx install poetry
+```
 
 ## 📄 Aide
 
