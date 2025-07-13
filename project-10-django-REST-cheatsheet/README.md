@@ -1,6 +1,6 @@
 # 🌐 Projet 10 Django REST - Aide-mémoire
 
-## Installation à partir de zéro
+## Installation de Poetry
 ### **Étape 1 : Installation de pipx**
 ```bash
 python -m pip install --user pipx
@@ -28,6 +28,25 @@ pipx install poetry
 ```bash
 poetry --version
 ```
+
+## Utilisation de Poetry
+### **Étape 1 : Créer un projet**
+Poetry configure tout pour vous, générant un fichier `pyproject.toml` pour centraliser la configuration.
+```bash
+poetry init
+```
+Vous serez guidé à travers une série de questions interactives :
+
+    Nom du projet
+    Version initiale
+    Description
+    Auteur(s)
+    Dépendances et compatibilité Python
+
+Si vous préférez sauter les questions, utilisez l’option `--no-interaction` pour une initialisation rapide avec des valeurs par défaut.
+```bash
+poetry init --no-interaction
+``` 
 
 ## 📄 Aide
 
