@@ -190,17 +190,19 @@ J'ai implémenté un système complet de gestion des projets avec les fonctionna
 🎯 Routes principales pour les projets
 | Méthode | URL      | Description | Permission |
 |---------|----------|-------------|------------|
-|GET | /api/projects/ |	Lister tous les projets accessibles	Contributeur |
+|GET | /api/projects/ |	Lister tous les projets accessibles | Contributeur |
 |POST | /api/projects/ | Créer un nouveau projet | Authentifié |
 |GET | /api/projects/{id}/ | Détails d'un projet | Contributeur |
 |PUT/PATCH | /api/projects/{id}/ | Modifier un projet | Auteur seulement |
 |DELETE | /api/projects/{id}/ | Supprimer un projet	| Auteur seulement |
 
 🔧 Routes spéciales pour la gestion des contributeurs
-Méthode	URL	Description	Permission
-GET	/api/projects/{id}/contributors/	Lister les contributeurs	Contributeur
-POST	/api/projects/{id}/add-contributor/	Ajouter un contributeur	Auteur seulement
-DELETE	/api/projects/{id}/remove-contributor/{user_id}/	Supprimer un contributeur	Auteur seulement
+| Méthode | URL      | Description | Permission |
+|---------|----------|-------------|------------|
+|GET | /api/projects/{id}/contributors/ | Lister les contributeurs | Contributeur |
+|POST | /api/projects/{id}/add-contributor/ | Ajouter un contributeur | Auteur seulement |
+|DELETE | /api/projects/{id}/remove-contributor/{user_id}/ | Supprimer un contributeur | Auteur seulement |
+
 🛡️ Logique de sécurité implémentée
 Authentification obligatoire : Toutes les routes nécessitent un token JWT
 Isolation des projets : Un utilisateur ne voit que les projets où il est contributeur
