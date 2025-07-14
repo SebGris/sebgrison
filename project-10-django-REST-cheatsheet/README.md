@@ -152,6 +152,74 @@ urlpatterns = [
 ]
 ```
 
+📋 Modèles créés selon les spécifications
+1. User (Utilisateur personnalisé)
+Hérite de `AbstractUser` pour étendre le modèle utilisateur Django
+Attributs RGPD : `can_be_contacted`, `can_data_be_shared`
+Validation d'âge : minimum 15 ans (conformité RGPD)
+Horodatage : `created_time`
+2. Project
+Attributs : `name`, `description`, `type`
+Types disponibles : back-end, front-end, iOS, Android
+Relations : `author` (créateur du projet)
+Horodatage : `created_time`
+3. Contributor
+Relations : `user` et `project`
+Contrainte unique : un utilisateur ne peut être contributeur qu'une fois par projet
+Horodatage : `created_time`
+4. Issue (Problème/Tâche)
+Attributs : `name`, `description`
+Priorité : LOW, MEDIUM, HIGH
+Tag : BUG, FEATURE, TASK
+Statut : To Do, In Progress, Finished (défaut: To Do)
+Relations : `project`, `author`, `assigned_to` (optionnel)
+Horodatage : `created_time`
+5. Comment
+ID unique : UUID (comme spécifié)
+Attributs : `description`
+Relations : `issue`, `author`
+Horodatage : `created_time`
+🔧 Configuration ajoutée
+Modèle User personnalisé configuré dans settings.py
+Configuration JWT pour l'authentification
+Interface d'administration complète pour tous les modèles
+
+📝 Récapitulatif des routes API implémentées
+J'ai implémenté un système complet de gestion des projets avec les fonctionnalités suivantes :
+
+🎯 Routes principales pour les projets
+| Méthode | URL      | Description | Permission |
+|---------|----------|-------------|------------|
+|GET | /api/projects/ |	Lister tous les projets accessibles	Contributeur |
+|POST | /api/projects/ | Créer un nouveau projet | Authentifié |
+|GET | /api/projects/{id}/ | Détails d'un projet | Contributeur |
+|PUT/PATCH | /api/projects/{id}/ | Modifier un projet | Auteur seulement |
+|DELETE | /api/projects/{id}/ | Supprimer un projet	| Auteur seulement |
+🔧 Routes spéciales pour la gestion des contributeurs
+Méthode	URL	Description	Permission
+GET	/api/projects/{id}/contributors/	Lister les contributeurs	Contributeur
+POST	/api/projects/{id}/add-contributor/	Ajouter un contributeur	Auteur seulement
+DELETE	/api/projects/{id}/remove-contributor/{user_id}/	Supprimer un contributeur	Auteur seulement
+🛡️ Logique de sécurité implémentée
+Authentification obligatoire : Toutes les routes nécessitent un token JWT
+Isolation des projets : Un utilisateur ne voit que les projets où il est contributeur
+Permissions d'auteur : Seul l'auteur peut modifier/supprimer son projet
+Auto-ajout comme contributeur : L'auteur devient automatiquement contributeur
+Protection de l'auteur : L'auteur ne peut pas être supprimé des contributeurs
+💡 Fonctionnalités spéciales
+Serializers adaptatifs : Différents serializers pour la lecture et l'écriture
+Validation des types : Vérification des types de projets autorisés
+Gestion des erreurs : Messages d'erreur explicites
+Relations automatiques : Gestion automatique des relations contributeur/projet
+🧪 Pour tester les routes
+Une fois les migrations appliquées et un superutilisateur créé, vous pourrez tester avec :
+
+Obtenir un token : POST /api/token/ avec username/password
+Créer un projet : POST /api/projects/ avec le token
+Ajouter des contributeurs : POST /api/projects/{id}/add-contributor/
+Modifier/supprimer : Selon les permissions
+Les routes sont maintenant prêtes pour être utilisées ! 🚀
+
 ## 📄 Aide
 
 - [Poetry le gestionnaire de dépendances Python moderne](https://blog.stephane-robert.info/docs/developper/programmation/python/poetry/)
