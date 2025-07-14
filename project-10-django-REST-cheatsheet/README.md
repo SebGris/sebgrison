@@ -47,6 +47,18 @@ Si vous préférez sauter les questions, utilisez l’option `--no-interaction` 
 poetry init --no-interaction
 ``` 
 
+### **Étape 2 : Ajouter des dépendances**
+Pour ajouter une dépendance dans un projet Poetry, il suffit de faire :
+```bash
+poetry add Django
+``` 
+### **Étape 3 : Activer l’environnement virtuel**
+```bash
+poetry env activate
+``` 
+Ensuite, Poetry vous donne le chemin vers le script d'activation de l'environnement virtuel. Cette réponse est normale avec `poetry env activate` - elle vous indique où se trouve le script d'activation.
+
+
 ## 📄 Aide
 
 - [Poetry le gestionnaire de dépendances Python moderne](https://blog.stephane-robert.info/docs/developper/programmation/python/poetry/)
