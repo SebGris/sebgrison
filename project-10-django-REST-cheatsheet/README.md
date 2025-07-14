@@ -84,7 +84,7 @@ poetry run python manage.py startapp issues
 cd softdesk_support
 ```
 ### **Étape 4 : Configurer l'application**
-N'oubliez pas d'ajouter votre application dans `settings.py` :
+Ajouter votre application dans `settings.py` :
 ```python
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -105,9 +105,56 @@ poetry run python manage.py runserver
 Ouvrez http://127.0.0.1:8000/ dans votre navigateur pour vérifier que le site Django fonctionne.
 Tapez Ctrl+C pour arrêter le serveur.
 
+## Ajoutez l’authentification des utilisateurs
+### **Étape 1 : Installer djangorestframework-simple-jwt**
+
+```bash
+poetry add djangorestframework-simplejwt
+``` 
+### **Étape 2 : Configurer djangorestframework-simple-jwt**
+Ajouter JWT dans les applications Django dans `settings.py` :
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt', # JWT Authentication
+    'issues',
+]
+```
+Ensuite, votre projet django doit être configuré pour utiliser la bibliothèque. Dans `settings.py`, ajoutez `rest_framework_simplejwt.authentication.JWTAuthentication` à la liste des classes d'authentification :
+```python
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        ...
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+    ...
+}
+```
+De plus, dans votre fichier `urls.py`, incluez des routes pour les vues `TokenObtainPairView` et `TokenRefreshView` de Simple JWT :
+```python
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+urlpatterns = [
+    ...
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    ...
+]
+```
 
 ## 📄 Aide
 
 - [Poetry le gestionnaire de dépendances Python moderne](https://blog.stephane-robert.info/docs/developper/programmation/python/poetry/)
 - [pipx — Install and Run Python Applications in Isolated Environments](https://pipx.pypa.io/stable/)
 - [Poetry — Installation](https://python-poetry.org/docs/#installing-with-pipx)
+- [Getting started — Simple JWT documentation](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html#project-configuration)
