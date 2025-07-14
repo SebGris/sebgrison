@@ -220,8 +220,11 @@ Relations automatiques : Gestion automatique des relations contributeur/projet
 Une fois les migrations appliquées et un superutilisateur créé, vous pourrez tester avec :
 
 1.**Obtenir un token** : POST `/api/token/` avec username/password
+
 2.**Créer un projet** : POST `/api/projects/` avec le token
+
 3.**Ajouter des contributeurs** : POST `/api/projects/{id}/add-contributor/`
+
 4.**Modifier/supprimer** : Selon les permissions
 
 Les routes sont maintenant prêtes pour être utilisées ! 🚀
