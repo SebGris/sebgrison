@@ -236,3 +236,4 @@ Les routes sont maintenant prêtes pour être utilisées ! 🚀
 - [Setting up a basic Django project with Poetry](https://builtwithdjango.com/blog/basic-django-setup)
 - [Poetry — Installation](https://python-poetry.org/docs/#installing-with-pipx)
 - [Getting started — Simple JWT documentation](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html#project-configuration)
+- [TODO](https://docs.github.com/fr/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
