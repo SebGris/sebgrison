@@ -209,11 +209,13 @@ Isolation des projets : Un utilisateur ne voit que les projets où il est contri
 Permissions d'auteur : Seul l'auteur peut modifier/supprimer son projet
 Auto-ajout comme contributeur : L'auteur devient automatiquement contributeur
 Protection de l'auteur : L'auteur ne peut pas être supprimé des contributeurs
+
 💡 Fonctionnalités spéciales
 Serializers adaptatifs : Différents serializers pour la lecture et l'écriture
 Validation des types : Vérification des types de projets autorisés
 Gestion des erreurs : Messages d'erreur explicites
 Relations automatiques : Gestion automatique des relations contributeur/projet
+
 🧪 Pour tester les routes
 Une fois les migrations appliquées et un superutilisateur créé, vous pourrez tester avec :
 
@@ -221,6 +223,7 @@ Obtenir un token : POST /api/token/ avec username/password
 Créer un projet : POST /api/projects/ avec le token
 Ajouter des contributeurs : POST /api/projects/{id}/add-contributor/
 Modifier/supprimer : Selon les permissions
+
 Les routes sont maintenant prêtes pour être utilisées ! 🚀
 
 ## 📄 Aide
