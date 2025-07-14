@@ -195,6 +195,7 @@ J'ai implémenté un système complet de gestion des projets avec les fonctionna
 |GET | /api/projects/{id}/ | Détails d'un projet | Contributeur |
 |PUT/PATCH | /api/projects/{id}/ | Modifier un projet | Auteur seulement |
 |DELETE | /api/projects/{id}/ | Supprimer un projet	| Auteur seulement |
+
 🔧 Routes spéciales pour la gestion des contributeurs
 Méthode	URL	Description	Permission
 GET	/api/projects/{id}/contributors/	Lister les contributeurs	Contributeur
