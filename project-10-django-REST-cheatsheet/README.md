@@ -156,5 +156,6 @@ urlpatterns = [
 
 - [Poetry le gestionnaire de dépendances Python moderne](https://blog.stephane-robert.info/docs/developper/programmation/python/poetry/)
 - [pipx — Install and Run Python Applications in Isolated Environments](https://pipx.pypa.io/stable/)
+- [Setting up a basic Django project with Poetry](https://builtwithdjango.com/blog/basic-django-setup)
 - [Poetry — Installation](https://python-poetry.org/docs/#installing-with-pipx)
 - [Getting started — Simple JWT documentation](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/getting_started.html#project-configuration)
