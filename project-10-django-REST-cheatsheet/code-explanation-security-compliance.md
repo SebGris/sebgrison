@@ -172,6 +172,8 @@ poetry run python -c "import django; print(f'Django {django.get_version()}')"
 
 ## 📋 Conformité RGPD
 
+**Référence :** [Le RGPD expliqué ligne par ligne (Articles 1 à 23)](https://next.ink/8232/106135-le-rgpd-explique-ligne-par-ligne-articles-1-a-23/)
+
 ### ✅ Article 6 - Licéité du traitement
 
 **Consentements explicites dans le modèle utilisateur :**
