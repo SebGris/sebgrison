@@ -242,55 +242,6 @@ def anonymize_user(user):
 - Contrôle d'accès granulaire
 - Journalisation des accès (via Django admin)
 
-## 🌱 Green Code - Optimisations Écologiques
-
-### ⚡ Optimisations de performance
-
-**Pagination efficace :**
-```python
-'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-'PAGE_SIZE': 10,  # Taille optimisée pour réduire la bande passante
-```
-
-**Rate Limiting pour économiser les ressources :**
-```python
-'DEFAULT_THROTTLE_CLASSES': [
-    'rest_framework.throttling.AnonRateThrottle',
-    'rest_framework.throttling.UserRateThrottle'
-],
-```
-
-**Optimisation des renderers :**
-- JSON uniquement en production
-- BrowsableAPIRenderer seulement en développement
-
-## 🔍 Points forts de la sécurité
-
-### 1. **Architecture défensive multicouche**
-- Permissions en cascade
-- Vérifications multiples
-- Principe du moindre privilège
-
-### 2. **Authentification robuste**
-- JWT avec rotation automatique
-- Durées d'expiration courtes
-- Blacklist des tokens compromis
-
-### 3. **Conformité légale intégrée**
-- RGPD dès la conception ("Privacy by Design")
-- Validation d'âge automatique
-- Gestion des consentements
-
-### 4. **Protection des données**
-- Chiffrement fort des mots de passe
-- Anonymisation respectueuse de l'intégrité
-- Contrôle d'accès granulaire
-
-### 5. **Monitoring et limitation**
-- Rate limiting configuré
-- Pagination pour les performances
-- Logging des actions sensibles
-
 ## 📊 Tableau de conformité
 
 | Norme | Critère | Status | Implémentation |
@@ -304,18 +255,6 @@ def anonymize_user(user):
 | **RGPD Art. 8** | Protection mineurs | ✅ | Validation âge minimum 15 ans |
 | **RGPD Art. 17** | Droit oubli | ✅ | Fonction d'anonymisation |
 | **RGPD Art. 32** | Sécurité | ✅ | Chiffrement + contrôle accès |
-
-## 🎯 Conclusion
-
-L'API SoftDesk respecte **parfaitement** les standards de sécurité modernes avec :
-
-- ✅ **100% de conformité OWASP Top 10**
-- ✅ **Conformité RGPD complète**
-- ✅ **Architecture "Security by Design"**
-- ✅ **Optimisations Green Code**
-- ✅ **Documentation exhaustive**
-
-Cette approche garantit une sécurité robuste, une conformité légale et une performance optimisée pour un développement durable.
 
 ---
 
