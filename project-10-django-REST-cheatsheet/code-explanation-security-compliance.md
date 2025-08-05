@@ -242,20 +242,6 @@ def anonymize_user(user):
 - Contrôle d'accès granulaire
 - Journalisation des accès (via Django admin)
 
-## 📊 Tableau de conformité
-
-| Norme | Critère | Status | Implémentation |
-|-------|---------|--------|----------------|
-| **OWASP A01** | Contrôle d'accès | ✅ | Permissions personnalisées |
-| **OWASP A02** | Cryptographie | ✅ | JWT + validation mots de passe |
-| **OWASP A03** | Injection | ✅ | ORM Django + serializers |
-| **OWASP A05** | Configuration | ✅ | Variables d'environnement |
-| **OWASP A07** | Authentification | ✅ | JWT avec rotation |
-| **RGPD Art. 6** | Consentement | ✅ | Champs booléens explicites |
-| **RGPD Art. 8** | Protection mineurs | ✅ | Validation âge minimum 15 ans |
-| **RGPD Art. 17** | Droit oubli | ✅ | Fonction d'anonymisation |
-| **RGPD Art. 32** | Sécurité | ✅ | Chiffrement + contrôle accès |
-
 ---
 
 *Dernière mise à jour : 5 août 2025*
