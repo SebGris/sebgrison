@@ -2,7 +2,7 @@
 
 ## 📋 Vue d'ensemble de l'API
 
-L'API **SoftDesk** est une plateforme collaborative de gestion de projets développée avec Django REST Framework. Elle permet la gestion de projets avec un système de tickets (issues) et de commentaires, tout en respectant rigoureusement les normes de sécurité OWASP et la réglementation RGPD.
+L'API **SoftDesk** est une API de gestion de projets développée avec Django REST Framework. Elle permet la gestion de projets avec un système de tickets (issues) et de commentaires, tout en respectant les normes de sécurité OWASP et la réglementation RGPD.
 
 ## 🛡️ Conformité OWASP Top 10 (2021)
 
@@ -172,6 +172,8 @@ poetry run python -c "import django; print(f'Django {django.get_version()}')"
 
 ## 📋 Conformité RGPD
 
+**Référence :** [Le RGPD expliqué ligne par ligne (Articles 1 à 23)](https://next.ink/8232/106135-le-rgpd-explique-ligne-par-ligne-articles-1-a-23/)
+
 ### ✅ Article 6 - Licéité du traitement
 
 **Consentements explicites dans le modèle utilisateur :**
@@ -241,81 +243,6 @@ def anonymize_user(user):
 - Transmission sécurisée (HTTPS recommandé)
 - Contrôle d'accès granulaire
 - Journalisation des accès (via Django admin)
-
-## 🌱 Green Code - Optimisations Écologiques
-
-### ⚡ Optimisations de performance
-
-**Pagination efficace :**
-```python
-'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-'PAGE_SIZE': 10,  # Taille optimisée pour réduire la bande passante
-```
-
-**Rate Limiting pour économiser les ressources :**
-```python
-'DEFAULT_THROTTLE_CLASSES': [
-    'rest_framework.throttling.AnonRateThrottle',
-    'rest_framework.throttling.UserRateThrottle'
-],
-```
-
-**Optimisation des renderers :**
-- JSON uniquement en production
-- BrowsableAPIRenderer seulement en développement
-
-## 🔍 Points forts de la sécurité
-
-### 1. **Architecture défensive multicouche**
-- Permissions en cascade
-- Vérifications multiples
-- Principe du moindre privilège
-
-### 2. **Authentification robuste**
-- JWT avec rotation automatique
-- Durées d'expiration courtes
-- Blacklist des tokens compromis
-
-### 3. **Conformité légale intégrée**
-- RGPD dès la conception ("Privacy by Design")
-- Validation d'âge automatique
-- Gestion des consentements
-
-### 4. **Protection des données**
-- Chiffrement fort des mots de passe
-- Anonymisation respectueuse de l'intégrité
-- Contrôle d'accès granulaire
-
-### 5. **Monitoring et limitation**
-- Rate limiting configuré
-- Pagination pour les performances
-- Logging des actions sensibles
-
-## 📊 Tableau de conformité
-
-| Norme | Critère | Status | Implémentation |
-|-------|---------|--------|----------------|
-| **OWASP A01** | Contrôle d'accès | ✅ | Permissions personnalisées |
-| **OWASP A02** | Cryptographie | ✅ | JWT + validation mots de passe |
-| **OWASP A03** | Injection | ✅ | ORM Django + serializers |
-| **OWASP A05** | Configuration | ✅ | Variables d'environnement |
-| **OWASP A07** | Authentification | ✅ | JWT avec rotation |
-| **RGPD Art. 6** | Consentement | ✅ | Champs booléens explicites |
-| **RGPD Art. 8** | Protection mineurs | ✅ | Validation âge minimum 15 ans |
-| **RGPD Art. 17** | Droit oubli | ✅ | Fonction d'anonymisation |
-| **RGPD Art. 32** | Sécurité | ✅ | Chiffrement + contrôle accès |
-
-## 🎯 Conclusion
-
-L'API SoftDesk respecte **parfaitement** les standards de sécurité modernes avec :
-
-- ✅ **100% de conformité OWASP Top 10**
-- ✅ **Conformité RGPD complète**
-- ✅ **Architecture "Security by Design"**
-- ✅ **Optimisations Green Code**
-- ✅ **Documentation exhaustive**
-
-Cette approche garantit une sécurité robuste, une conformité légale et une performance optimisée pour un développement durable.
 
 ---
 
