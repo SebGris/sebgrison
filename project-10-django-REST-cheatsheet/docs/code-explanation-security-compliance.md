@@ -193,17 +193,21 @@ class User(AbstractUser):
 
 **Validation d'âge obligatoire :**
 ```python
-age = models.IntegerField(
-    validators=[MinValueValidator(15, message="L'âge minimum requis est de 15 ans.")],
-    help_text="Doit avoir au moins 15 ans (RGPD)"
+class User(AbstractUser):
+    ...
+    age = models.IntegerField(
+        validators=[MinValueValidator(15, message="L'âge minimum requis est de 15 ans.")],
+        help_text="Doit avoir au moins 15 ans (RGPD)"
 )
 ```
 
 **Vérification avant sauvegarde :**
 ```python
-def save(self, *args, **kwargs):
-    self.full_clean()  # Déclenche la validation des champs
-    super().save(*args, **kwargs)
+class User(AbstractUser):
+    ...
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Déclenche la validation des champs
+        super().save(*args, **kwargs)
 ```
 
 ### ✅ Article 17 - Droit à l'effacement ("droit à l'oubli")
