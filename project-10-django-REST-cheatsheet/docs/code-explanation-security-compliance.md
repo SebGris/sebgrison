@@ -261,5 +261,7 @@ class User(AbstractUser):
 ---
 
 *Dernière mise à jour : 5 août 2025*
-*Auteur : GitHub Copilot*
+
+*Auteur : GitHub Copilot et Sébastien Grison*
+
 *Projet : SoftDesk API - OpenClassrooms Projet 10*
