@@ -12,7 +12,7 @@ L'API **SoftDesk** est une API de gestion de projets développée avec Django RE
 
 **Implémentation :** Système de permissions à plusieurs niveaux
 
-1. **`IsProjectAuthorOrContributor`** (**Utilisée dans :** `ProjectViewSet`)
+1. **`IsProjectAuthorOrContributor`** (Utilisée dans : `ProjectViewSet`)
    ```python
    class IsProjectAuthorOrContributor(permissions.BasePermission):
        def has_object_permission(self, request, view, obj):
@@ -42,7 +42,7 @@ L'API **SoftDesk** est une API de gestion de projets développée avec Django RE
    - Permissions en cascade pour issues et commentaires
    - **Utilisée dans :** `CommentViewSet`
 
-4. **`IsOwnerOrReadOnly`** (**Utilisée dans :** `UserViewSet`)
+4. **`IsOwnerOrReadOnly`** (Utilisée dans : `UserViewSet`)
    ```python
    class IsOwnerOrReadOnly(permissions.BasePermission):
        def has_object_permission(self, request, view, obj):
