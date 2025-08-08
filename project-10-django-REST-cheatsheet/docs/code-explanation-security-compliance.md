@@ -174,7 +174,7 @@ poetry run python -c "import django; print(f'Django {django.get_version()}')"
 
 **Référence :** [Le RGPD expliqué ligne par ligne (Articles 1 à 23)](https://next.ink/8232/106135-le-rgpd-explique-ligne-par-ligne-articles-1-a-23/)
 
-### ✅ Article 6 - Licéité du traitement
+### ✅ article 6 - Licéité du traitement (Le caractère licite du traitement)
 
 **Consentements explicites dans le modèle utilisateur :**
 ```python
@@ -207,6 +207,10 @@ def save(self, *args, **kwargs):
 ```
 
 ### ✅ Article 17 - Droit à l'effacement ("droit à l'oubli")
+
+**Piste d'amélioration (TODO)**
+- Endpoint de suppression d’utilisateur (DELETE /api/users/{id}/) pour effacer (ou anonymiser) les données.
+- utiliser `on_delete=models.PROTECT` au lieu de `on_delete=models.CASCADE`,
 
 **Stratégie d'anonymisation :**
 - Anonymisation plutôt que suppression pour préserver l'intégrité
