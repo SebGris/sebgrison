@@ -12,7 +12,7 @@ L'API **SoftDesk** est une API de gestion de projets développée avec Django RE
 
 **Implémentation :** Système de permissions à plusieurs niveaux
 
-1. **`IsProjectAuthorOrContributor`**
+1. **`IsProjectAuthorOrContributor`** (**Utilisée dans :** `ProjectViewSet`)
    ```python
    class IsProjectAuthorOrContributor(permissions.BasePermission):
        def has_object_permission(self, request, view, obj):
@@ -30,7 +30,6 @@ L'API **SoftDesk** est une API de gestion de projets développée avec Django RE
    - Seuls les contributeurs peuvent accéder au projet
    - Seul l'auteur peut modifier/supprimer
    - Validation stricte via `obj.contributors.filter(user=request.user).exists()`
-   **Utilisée dans :** `ProjectViewSet`
 
 2. **`IsProjectContributor`**
    - Vérification via nested routes (`project_pk`)
@@ -174,7 +173,7 @@ poetry run python -c "import django; print(f'Django {django.get_version()}')"
 
 **Référence :** [Le RGPD expliqué ligne par ligne (Articles 1 à 23)](https://next.ink/8232/106135-le-rgpd-explique-ligne-par-ligne-articles-1-a-23/)
 
-### ✅ article 6 - Licéité du traitement (Le caractère licite du traitement)
+### ✅ Article 6 - Licéité du traitement
 
 **Consentements explicites dans le modèle utilisateur :**
 ```python
@@ -193,28 +192,20 @@ class User(AbstractUser):
 
 **Validation d'âge obligatoire :**
 ```python
-class User(AbstractUser):
-    ...
-    age = models.IntegerField(
-        validators=[MinValueValidator(15, message="L'âge minimum requis est de 15 ans.")],
-        help_text="Doit avoir au moins 15 ans (RGPD)"
+age = models.IntegerField(
+    validators=[MinValueValidator(15, message="L'âge minimum requis est de 15 ans.")],
+    help_text="Doit avoir au moins 15 ans (RGPD)"
 )
 ```
 
 **Vérification avant sauvegarde :**
 ```python
-class User(AbstractUser):
-    ...
-    def save(self, *args, **kwargs):
-        self.full_clean()  # Déclenche la validation des champs
-        super().save(*args, **kwargs)
+def save(self, *args, **kwargs):
+    self.full_clean()  # Déclenche la validation des champs
+    super().save(*args, **kwargs)
 ```
 
 ### ✅ Article 17 - Droit à l'effacement ("droit à l'oubli")
-
-**Piste d'amélioration (TODO)**
-- Endpoint de suppression d’utilisateur (DELETE /api/users/{id}/) pour effacer (ou anonymiser) les données.
-- utiliser `on_delete=models.PROTECT` au lieu de `on_delete=models.CASCADE`,
 
 **Stratégie d'anonymisation :**
 - Anonymisation plutôt que suppression pour préserver l'intégrité
