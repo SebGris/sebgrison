@@ -16,21 +16,21 @@ L'API **SoftDesk** est une API de gestion de projets développée avec Django RE
    ```python
    class IsProjectAuthorOrContributor(permissions.BasePermission):
        def has_object_permission(self, request, view, obj):
-           # Seuls les contributeurs peuvent accéder au projet
-           if not obj.contributors.filter(user=request.user).exists():
-               return False
+            # Seuls les contributeurs peuvent accéder au projet
+            if not obj.contributors.filter(user=request.user).exists():
+                return False
            
-           # Pour les modifications, seul l'auteur peut modifier
-           if view.action in ['update', 'partial_update', 'destroy']:
-               return obj.author == request.user
-           
-           # Pour la lecture (tous les contributeurs)
-           return True
+            # Pour les actions de modification, suppression et ajout de contributeurs
+            if view.action in ['update', 'partial_update', 'destroy', 'add_contributor']:
+                return obj.author == request.user
+                
+            # Pour la lecture (tous les contributeurs)
+            return True
    ```
    - Seuls les contributeurs peuvent accéder au projet
    - Seul l'auteur peut modifier/supprimer
    - Validation stricte via `obj.contributors.filter(user=request.user).exists()`
-   - **Utilisée dans :** `ProjectViewSet`
+   **Utilisée dans :** `ProjectViewSet`
 
 2. **`IsProjectContributor`**
    - Vérification via nested routes (`project_pk`)
