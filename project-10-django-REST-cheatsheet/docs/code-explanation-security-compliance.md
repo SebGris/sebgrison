@@ -260,7 +260,7 @@ class User(AbstractUser):
 ```
 ---
 
-*Dernière mise à jour : 5 août 2025*
+*Dernière mise à jour : 8 août 2025*
 
 *Auteur : GitHub Copilot et Sébastien Grison*
 
