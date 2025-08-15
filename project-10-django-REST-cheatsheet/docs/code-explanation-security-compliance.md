@@ -244,20 +244,14 @@ def anonymize_user(user):
 
 ---
 
-**Erreurs trouvées après :**
-- Le serializer `UserCreateSerializer` est à supprimer car non utilisé. Voir `UserRegistrationSerializer` qui est utlisé par `UserViewSet`.
-- `def validate_age(self, value)` dans `UserRegistrationSerializer` est en doublon avec :
-```python
-class User(AbstractUser):
-    """
-    Modèle utilisateur personnalisé avec gestion RGPD et âge
-    """
-    age = models.IntegerField(
-        verbose_name="Âge",
-        validators=[MinValueValidator(15, message="L'âge minimum requis est de 15 ans.")],
-        help_text="Doit avoir au moins 15 ans (RGPD)"
-    )
-```
+✅ Avantages de Poetry pour votre projet OpenClassrooms :
+
+- Gestion moderne des dépendances - Plus professionnel que pip + requirements.txt
+- Isolation parfaite - Environnement virtuel automatique
+- Reproductibilité - Le fichier poetry.lock garantit les mêmes versions
+- Groupes de dépendances - Séparation dev/prod
+- Compatible avec les standards Python - PEP 517/518
+
 ---
 
 *Dernière mise à jour : 8 août 2025*
