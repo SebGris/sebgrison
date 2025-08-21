@@ -6,7 +6,9 @@ L’objectif est d’**améliorer une application web Flask** en optimisant la q
 - La mise en place de **tests unitaires et fonctionnels**  
 - L’utilisation de la méthode **TDD (Test-Driven Development)**  
 - Le **débogage** et la gestion des erreurs/exceptions  
-- Des **tests automatisés** avec **pytest** et **Selenium**  
+- Des **tests automatisés** avec **pytest** et **Selenium**
+
+[OpenClassrooms-Student-Center_Python_Testing](https://github.com/OpenClassrooms-Student-Center/Python_Testing)
 
 ## 🛠️ Technologies utilisées
 - **Python 3**
