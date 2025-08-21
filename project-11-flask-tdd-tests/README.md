@@ -9,6 +9,7 @@ L’objectif est d’**améliorer une application web Flask** en optimisant la q
 - Des **tests automatisés** avec **pytest** et **Selenium**
 
 [OpenClassrooms-Student-Center_Python_Testing](https://github.com/OpenClassrooms-Student-Center/Python_Testing)
+[Issues · OpenClassrooms-Student-Center_Python_Testing](https://github.com/OpenClassrooms-Student-Center/Python_Testing/issues)
 
 ## 🛠️ Technologies utilisées
 - **Python 3**
