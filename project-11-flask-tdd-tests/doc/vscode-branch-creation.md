@@ -118,8 +118,95 @@ git branch nom-de-la-branche  # Créer la branche
 git checkout nom-de-la-branche # Basculer dessus
 ```
 
+## 🔀 Fusionner une branche
+
+### Étape 1 : Préparer la fusion
+
+1. **Sauvegarder votre travail**
+   - Committez tous vos changements dans la branche actuelle
+   - Vérifiez avec `git status` qu'il n'y a pas de modifications non sauvegardées
+
+2. **Basculer sur la branche cible**
+   - Cliquez sur le nom de la branche en bas à gauche
+   - Sélectionnez la branche dans laquelle vous voulez fusionner (ex: `main`, `develop`, ou `qa/integration`)
+
+### Étape 2 : Fusionner via VS Code
+
+#### Méthode 1 : Via la palette de commandes
+1. Ouvrez la palette (`Ctrl+Shift+P` ou `Cmd+Shift+P`)
+2. Tapez : `Git: Merge Branch`
+3. Sélectionnez la branche à fusionner (ex: `fix/issue-1`)
+4. VS Code effectue la fusion
+
+#### Méthode 2 : Via le panneau Source Control
+1. Ouvrez Source Control (`Ctrl+Shift+G`)
+2. Cliquez sur les trois points `...`
+3. Sélectionnez **Branch** → **Merge Branch...**
+4. Choisissez la branche à fusionner
+
+### Étape 3 : Gérer les conflits (si nécessaire)
+
+Si des conflits apparaissent :
+
+1. **VS Code les signale**
+   - Les fichiers en conflit apparaissent dans l'onglet Source Control
+   - Les zones de conflit sont marquées dans le code
+
+2. **Résoudre les conflits**
+   - Cliquez sur chaque fichier en conflit
+   - Choisissez parmi les options :
+     - **Accept Current Change** : Garder la version de la branche actuelle
+     - **Accept Incoming Change** : Prendre la version de la branche fusionnée
+     - **Accept Both Changes** : Garder les deux versions
+     - Ou éditer manuellement
+
+3. **Finaliser la fusion**
+   - Après résolution, sauvegardez les fichiers
+   - Committez les changements de fusion
+
+### Workflow recommandé pour votre projet
+
+```mermaid
+graph LR
+    A[main] --> B[feature/nouvelle-fonction]
+    A --> C[fix/issue-1]
+    B --> D[qa/integration]
+    C --> D
+    D --> A
+```
+
+1. **Créer une branche** depuis `main` pour chaque issue
+2. **Développer** la fonctionnalité ou le correctif
+3. **Fusionner** d'abord vers `qa/integration` pour les tests
+4. **Tester** l'intégration complète
+5. **Fusionner** `qa/integration` vers `main` une fois validé
+
+### Commandes Git équivalentes
+
+```bash
+# Se placer sur la branche cible
+git checkout main
+
+# Fusionner une branche
+git merge feature/ma-fonctionnalite
+
+# En cas de conflit, après résolution
+git add .
+git commit -m "Résolution des conflits de fusion"
+```
+
+### 📋 Checklist avant fusion
+
+- [ ] Tous les changements sont commités
+- [ ] Les tests passent (si applicable)
+- [ ] Le code a été revu
+- [ ] La branche est à jour avec la branche cible
+- [ ] Les conflits potentiels ont été identifiés
+
 ## ⚠️ Points d'attention
 
 - Une branche est créée à partir de votre position actuelle (HEAD)
 - Les modifications non committées seront transportées vers la nouvelle branche
 - Pensez à faire un `git pull` régulièrement pour rester à jour avec le repository distant
+- **Avant de fusionner** : Assurez-vous que votre branche cible est à jour (`git pull`)
+- **Après la fusion** : Vous pouvez supprimer la branche fusionnée si elle n'est plus nécessaire
