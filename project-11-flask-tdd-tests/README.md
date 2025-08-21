@@ -21,7 +21,7 @@ L’objectif est d’**améliorer une application web Flask** en optimisant la q
 - Validation de la couverture de code
 - Application de la méthodologie TDD
 
-## 📂 Installation et exécution
+## 📂 Installation et exécution de flask
 1. Cloner ce dépôt  
    ```bash
    git clone https://github.com/OpenClassrooms-Student-Center/Python_Testing.git
@@ -46,6 +46,11 @@ L’objectif est d’**améliorer une application web Flask** en optimisant la q
    python -m flask --app server run
    ```
 
+## 📂 Installation de Coverage.py
+```bash
+pip install coverage
+```
+
 ## Aide
 
 ### Erreur "Could not locate a Flask application"
@@ -57,7 +62,7 @@ Activer l'environnement virtuel, puis tapez :
 ```bash
 python -m flask --app server run
 ```
-
+### Adresse
 http://127.0.0.1:5000/
 
 ## ⚠️ Licence et utilisation
