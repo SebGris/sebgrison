@@ -110,9 +110,10 @@ Le résumé doit s'afficher à l'utilisateur lorsqu'une adresse e-mail correcte 
    python -m flask --app server run
    ```
 
-## 📂 Installation de Coverage.py
+## 📂 Installation de Coverage.py et Pytest
 ```bash
 pip install coverage
+pip install -U pytest
 ```
 
 ## Aide
