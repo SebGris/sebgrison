@@ -180,6 +180,30 @@ pip install webdriver-manager
 # - Firefox: https://github.com/mozilla/geckodriver/releases
 ```
 
+### 📋 TODO pour le fichier `.gitignore`
+
+La ligne `tests/` dans `.gitignore` fait que Git ignore TOUS les fichiers de tests.
+
+#### ❌ État actuel (PROBLÉMATIQUE)
+```gitignore
+tests/      # ← CETTE LIGNE DOIT ÊTRE SUPPRIMÉE
+```
+
+#### ✅ Ce qu'il faut faire AVANT de commencer le projet
+
+1. **Ouvrir `.gitignore`**
+2. **SUPPRIMER la ligne `tests/`**
+3. **Garder ces lignes** :
+   ```gitignore
+   venv/
+   .venv/
+   __pycache__/
+   *.pyc
+   .pytest_cache/
+   htmlcov/
+   .coverage
+   ```
+
 ## 📝 Exécution des tests
 
 ### Tests unitaires et fonctionnels
