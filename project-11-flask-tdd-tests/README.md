@@ -159,9 +159,11 @@ L'application sera accessible à l'adresse : http://127.0.0.1:5000/
 ```bash
 # Framework de test
 pip install -U pytest
+pip install pytest-flask # pour écrire moins de code
 
 # Couverture de code
 pip install coverage
+pip install pytest-cov
 
 # Tests de performance
 pip install locust
