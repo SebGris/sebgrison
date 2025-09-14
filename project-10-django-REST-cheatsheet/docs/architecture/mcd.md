@@ -1,4 +1,4 @@
-# 📊 Modèle Conceptuel de Données (MCD) - Application Issues Tracker
+# 📊 Modèle Conceptuel de Données (MCD) - SoftDesk API
 
 [← Retour à la documentation](../README.md) | [Architecture](./architecture.md)
 

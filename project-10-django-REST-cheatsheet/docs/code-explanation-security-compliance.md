@@ -4,46 +4,54 @@
 
 L'API **SoftDesk** est une API de gestion de projets développée avec Django REST Framework. Elle permet la gestion de projets avec un système de tickets (issues) et de commentaires, tout en respectant les normes de sécurité OWASP et la réglementation RGPD.
 
+### 🔒 Respect des normes OWASP
+- Contrôle d’accès strict : Permissions par ressource, accès limité selon le rôle (IsAuthenticated, IsOwnerOrReadOnly, etc.).
+- Gestion des identifiants : Authentification JWT, mots de passe jamais exposés dans les réponses.
+- Validation côté serveur : Toutes les données sont validées côté backend (types, formats, unicité, contraintes).
+- Gestion des erreurs : Pas de fuite d’informations sensibles dans les messages d’erreur.
+- Protection contre l’injection : Utilisation des ORM Django, pas de requêtes SQL brutes.
+- Sécurité des tokens : Expiration des tokens JWT, rafraîchissement sécurisé.
+### 🛡️ Respect du RGPD
+- Données minimales : Seules les données nécessaires sont collectées (username, email, âge, consentements explicites).
+- Consentement explicite : Champs can_be_contacted et can_data_be_shared pour recueillir le consentement utilisateur.
+- Droit à l’oubli : Endpoint de suppression d’utilisateur (DELETE /api/users/{id}/) pour effacer toutes les données liées.
+- Transparence : Les utilisateurs peuvent consulter et modifier leurs données personnelles.
+- Sécurité des données : Données sensibles (mots de passe) stockées de façon sécurisée (hashées), jamais retournées dans les réponses API.
+- Traçabilité : Toutes les actions sont authentifiées et traçables via les tokens JWT.
+
 ## 🛡️ Conformité OWASP Top 10 (2021)
 
 **Référence officielle :** [OWASP Top 10 - 2021](https://owasp.org/Top10/)
 
 ### ✅ A01 - Broken Access Control (Contrôle d'accès défaillant)
 
-**Implémentation :** Système de permissions à plusieurs niveaux
+**Implémentation :** Permissions par ressource, accès limité selon le rôle (IsAuthenticated, IsOwnerOrReadOnly, etc.).
 
-1. **`IsProjectAuthorOrContributor`**
+1. **`IsProjectAuthorOrContributor`** (Utilisée dans : `ProjectViewSet`)
    ```python
    class IsProjectAuthorOrContributor(permissions.BasePermission):
        def has_object_permission(self, request, view, obj):
-           # Seuls les contributeurs peuvent accéder au projet
-           if not obj.contributors.filter(user=request.user).exists():
-               return False
+            # Seuls les contributeurs peuvent accéder au projet
+            if not obj.contributors.filter(user=request.user).exists():
+                return False
            
-           # Pour les modifications, seul l'auteur peut modifier
-           if view.action in ['update', 'partial_update', 'destroy']:
-               return obj.author == request.user
-           
-           # Pour la lecture (tous les contributeurs)
-           return True
+            # Pour les actions de modification, suppression et ajout de contributeurs
+            if view.action in ['update', 'partial_update', 'destroy', 'add_contributor']:
+                return obj.author == request.user
+                
+            # Pour la lecture (tous les contributeurs)
+            return True
    ```
    - Seuls les contributeurs peuvent accéder au projet
    - Seul l'auteur peut modifier/supprimer
    - Validation stricte via `obj.contributors.filter(user=request.user).exists()`
-   - **Utilisée dans :** `ProjectViewSet`
 
-2. **`IsProjectContributor`**
+2. **`IsProjectContributorOrObjectAuthorOrReadOnly`** (Utilisée dans : `IssueViewSet`, `CommentViewSet`)
    - Vérification via nested routes (`project_pk`)
    - Protection contre l'accès non autorisé aux ressources
    - Gestion des cas d'erreur (projet inexistant)
-   - **Utilisée dans :** `IssueViewSet`, `ContributorViewSet`
 
-3. **`IsAuthorOrProjectAuthorOrReadOnly`**
-   - Double vérification : contributeur ET auteur/auteur du projet
-   - Permissions en cascade pour issues et commentaires
-   - **Utilisée dans :** `CommentViewSet`
-
-4. **`IsOwnerOrReadOnly`**
+3. **`IsOwnerOrReadOnly`** (Utilisée dans : `UserViewSet`)
    ```python
    class IsOwnerOrReadOnly(permissions.BasePermission):
        def has_object_permission(self, request, view, obj):
@@ -55,7 +63,6 @@ L'API **SoftDesk** est une API de gestion de projets développée avec Django RE
    ```
    - Protection des profils utilisateurs
    - Modification limitée au propriétaire uniquement
-   - **Utilisée dans :** `UserViewSet` pour les actions update/destroy
 
 **Sécurité renforcée :**
 - Toutes les vues protégées par `IsAuthenticated`
@@ -63,6 +70,8 @@ L'API **SoftDesk** est une API de gestion de projets développée avec Django RE
 - Permissions combinées pour protection multicouche
 
 ### ✅ A02 - Cryptographic Failures (Défaillances cryptographiques)
+
+**Implémentation :** Authentification JWT.
 
 **Configuration JWT sécurisée :**
 ```python
@@ -88,32 +97,21 @@ AUTH_PASSWORD_VALIDATORS = [
 ### ✅ A03 - Injection
 
 **Protection automatique Django :**
-- ORM Django prévient les injections SQL automatiquement
-- Validation stricte via serializers DRF
+- Utilisation de l'ORM Django, pas de requêtes SQL brutes.
+- Validation via serializers DRF
 
 **Exemple concret de validation stricte :**
 ```python
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    """Validation multicouche pour l'inscription utilisateur"""
-    password = serializers.CharField(write_only=True, required=True)
-    password_confirm = serializers.CharField(write_only=True, required=True)
-    age = serializers.IntegerField(min_value=15, error_messages={
-        'min_value': 'L\'âge minimum requis est de 15 ans (conformité RGPD).'
-    })
-    
-    def validate(self, attrs):
-        """Validation personnalisée multicritères"""
-        # 1. Validation des mots de passe
-        if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError("Les mots de passe ne correspondent pas.")
-        
-        # 2. Validation RGPD - âge minimum (double vérification)
-        if attrs.get('age', 0) < 15:
-            raise serializers.ValidationError({
-                'age': 'Vous devez avoir au moins 15 ans (conformité RGPD).'
-            })
-        
-        return attrs
+    """Serializer pour l'inscription d'un nouvel utilisateur"""
+   ... 
+   # Attention : inutile dans la dernière version du code ?
+    def validate_age(self, value):
+        """Valider que l'utilisateur a au moins 15 ans"""
+        if value < 15:
+            raise serializers.ValidationError("L'utilisateur doit avoir au moins 15 ans.")
+        return value
+    ...
 ```
 
 **Protection contre l'injection via validation :**
@@ -246,6 +244,18 @@ def anonymize_user(user):
 
 ---
 
-*Dernière mise à jour : 5 août 2025*
-*Auteur : GitHub Copilot*
+✅ Avantages de Poetry pour votre projet OpenClassrooms :
+
+- Gestion moderne des dépendances - Plus professionnel que pip + requirements.txt
+- Isolation parfaite - Environnement virtuel automatique
+- Reproductibilité - Le fichier poetry.lock garantit les mêmes versions
+- Groupes de dépendances - Séparation dev/prod
+- Compatible avec les standards Python - PEP 517/518
+
+---
+
+*Dernière mise à jour : 8 août 2025*
+
+*Auteur : GitHub Copilot et Sébastien Grison*
+
 *Projet : SoftDesk API - OpenClassrooms Projet 10*
