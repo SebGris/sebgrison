@@ -211,7 +211,7 @@ tests/      # ← CETTE LIGNE DOIT ÊTRE SUPPRIMÉE
 ### Tests unitaires et fonctionnels
 ```bash
 # Lancer tous les tests
-pytest
+python -m pytest tests/
 
 # Lancer avec détails
 pytest -v
