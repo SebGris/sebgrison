@@ -248,6 +248,19 @@ Assurez-vous d'avoir activé l'environnement virtuel, puis tapez :
 python -m flask --app server run
 ```
 
+## 📝 Aide-mémoire pour la soutenance
+
+Voici deux commandes indispensables pour lancer et tester l'application :
+
+- Démarrer le serveur Flask :
+  ```bash
+  python -m flask --app server run
+  ```
+- Lancer les tests avec pytest :
+  ```bash
+  python -m pytest tests/
+  ```
+
 ## ⚖️ Licence et utilisation
 
 Copyright (c) 2025 Sébastien Grison  
