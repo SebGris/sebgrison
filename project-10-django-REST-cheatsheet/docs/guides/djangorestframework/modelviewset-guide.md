@@ -231,19 +231,23 @@ Notre projet utilise des routes imbriquées pour organiser les ressources :
 
 ```python
 def get_queryset(self):
-    """Retourner les issues selon le contexte (imbriqué ou global)"""
-    user = self.request.user
-    project_id = self.kwargs.get('project_pk')  # Récupérer l'ID depuis l'URL
-    
-    if project_id:
-        # Route imbriquée: /projects/{project_id}/issues/
-        project = Project.objects.get(id=project_id)
-        return project.issues.select_related('author', 'assigned_to', 'project').all()
-    else:
-        # Route directe: /issues/
-        return Issue.objects.filter(
-            models.Q(project__contributors__user=user) | models.Q(project__author=user)
-        ).distinct()
+        """Retourne les issues du projet spécifié dans l'URL"""
+        project_id = self.kwargs.get('project_pk')
+        
+        # SELECT_RELATED : Joint les tables liées (ForeignKey) en UNE SEULE requête SQL
+        # Sans select_related : N+1 requêtes (1 pour les issues + 1 par issue pour author/project/assignee)
+        # Avec select_related : 1 SEULE requête avec JOIN
+        # 
+        # PREFETCH_RELATED : Fait 2 requêtes séparées mais optimisées
+        # 1ère requête : récupère les issues
+        # 2ème requête : récupère TOUS les commentaires liés d'un coup avec un WHERE IN
+        return Issue.objects.filter(project_id=project_id).select_related(
+            'author',      # JOIN avec User table (ForeignKey)
+            'project',     # JOIN avec Project table (ForeignKey) 
+            'assignee'     # JOIN avec User table (ForeignKey)
+        ).prefetch_related(
+            'comments'     # 2ème requête optimisée pour récupérer tous les commentaires
+        )
 ```
 
 ## 📊 Optimisations Green Code
