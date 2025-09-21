@@ -268,6 +268,15 @@ Voici deux commandes indispensables pour lancer et tester l'application :
   ```bash
   start htmlcov/index.html
   ```
+
+### Lancer les tests de performance
+
+```bash
+python -m flask --app server run
+locust -f locustfile.py --host=http://localhost:5000 --users=6 --spawn-rate=1 --run-time=60s
+```
+Allez sur http://localhost:8089
+
 ## ⚖️ Licence et utilisation
 
 Copyright (c) 2025 Sébastien Grison  
