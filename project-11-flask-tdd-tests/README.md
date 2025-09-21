@@ -260,7 +260,14 @@ Voici deux commandes indispensables pour lancer et tester l'application :
   ```bash
   python -m pytest tests/
   ```
-
+- Générer le rapport HTML :
+  ```bash
+  pytest --cov=server --cov-report=html
+  ```
+- Ouvrir le rapport :
+  ```bash
+  start htmlcov/index.html
+  ```
 ## ⚖️ Licence et utilisation
 
 Copyright (c) 2025 Sébastien Grison  
