@@ -278,10 +278,3 @@ python -m flask --app server run
 locust -f locustfile.py --host=http://localhost:5000 --users=6 --spawn-rate=1 --run-time=60s
 ```
 
-## ⚖️ Licence et utilisation
-
-Copyright (c) 2025 Sébastien Grison  
-Tous droits réservés.
-
-Ce code est fourni uniquement à titre éducatif dans le cadre d'un projet OpenClassrooms, formation « Développeur d'application Python ».  
-Toute reproduction, modification, redistribution ou utilisation de ce code, totale ou partielle, à des fins autres que personnelles et éducatives, est strictement interdite sans autorisation écrite préalable de l'auteur.
