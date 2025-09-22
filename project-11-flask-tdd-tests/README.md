@@ -253,21 +253,23 @@ python -m flask --app server run
 Voici deux commandes indispensables pour lancer et tester l'application :
 
 - Démarrer le serveur Flask :
-  ```bash
-  python -m flask --app server run
-  ```
+```bash
+python -m flask --app server run
+```
 - Lancer les tests avec pytest :
-  ```bash
-  python -m pytest tests/
-  ```
+```bash
+python -m pytest tests/
+```
 - Générer le rapport HTML :
-  ```bash
-  pytest --cov=server --cov-report=html
-  ```
+```bash
+pytest --cov=server --cov-report=html
+```
 - Ouvrir le rapport :
-  ```bash
-  start htmlcov/index.html
-  ```
+```bash
+start htmlcov/index.html
+```
+
+Allez sur http://localhost:8089
 
 ### Lancer les tests de performance
 
@@ -275,7 +277,6 @@ Voici deux commandes indispensables pour lancer et tester l'application :
 python -m flask --app server run
 locust -f locustfile.py --host=http://localhost:5000 --users=6 --spawn-rate=1 --run-time=60s
 ```
-Allez sur http://localhost:8089
 
 ## ⚖️ Licence et utilisation
 
