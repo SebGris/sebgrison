@@ -28,17 +28,26 @@ git branch
 ---
 ## 3. Bugs Corrigés depuis GitHub Issues (5 minutes)
 
-### Issue #1 : Réservations sur compétitions passées
-**GitHub Issue :** "Users can book places on past competitions"  
-**Problème :** Les secrétaires pouvaient réserver sur des compétitions terminées
-
-**Solution (server.py, ligne 191) : n°1**
+### Feat : Add route for points display
+Dans `server.py` et `points.html` et `test_points_display.py`
 ```python
-competition_date = datetime.strptime(competition['date'], "%Y-%m-%d %H:%M:%S")
-if competition_date < datetime.now():
-    return "Cannot book places for past competitions."
+@app.route('/points')
+def display_points():
+    """Affichage public du tableau des points"""
+    return render_template('points.html', clubs=clubs)
 ```
-**Test associé :** `test_past_competition()` ✅
+### Issue #5 : Validation email manquante
+**GitHub Issue :** "No proper email validation"  
+**Problème :** Messages d'erreur insuffisants pour emails invalides
+
+**Solution (server.py, lignes 93-97) :**
+Dans `server.py` et `index.html` et `test_email_validation.py`
+```python
+if not club:
+    flash("Sorry, that email wasn't found.")
+    return redirect(url_for('index'))
+```
+**Test associé :** `test_invalid_email_shows_flash_message()` ✅
 
 ### Issue #2 : Points négatifs possibles
 **GitHub Issue :** "Club points can go negative"  
@@ -67,6 +76,19 @@ if total_would_be > MAX_PLACES:
 ```
 **Tests associés :** `test_more_than_twelve()` et `test_cumulative_booking_limit()` ✅
 
+### Issue #1 : Réservations sur compétitions passées
+**GitHub Issue :** "Users can book places on past competitions"  
+**Problème :** Les secrétaires pouvaient réserver sur des compétitions terminées
+
+**Solution (server.py, ligne 191) : n°1**
+```python
+competition_date = datetime.strptime(competition['date'], "%Y-%m-%d %H:%M:%S")
+if competition_date < datetime.now():
+    return "Cannot book places for past competitions."
+```
+**Test associé :** `test_past_competition()` ✅
+
+
 ### Issue #4 : Réservation au-delà des places disponibles
 **GitHub Issue :** "Can book more places than available"  
 **Problème :** Possibilité de surréservation d'une compétition
@@ -78,18 +100,6 @@ if places_required > int(competition['numberOfPlaces']):
     return f"Not enough places available. Only {places_left} places left"
 ```
 **Test associé :** `test_more_than_available()` ✅
-
-### Issue #5 : Validation email manquante
-**GitHub Issue :** "No proper email validation"  
-**Problème :** Messages d'erreur insuffisants pour emails invalides
-
-**Solution (server.py, lignes 93-97) :**
-```python
-if not club:
-    flash("Sorry, that email wasn't found.")
-    return redirect(url_for('index'))
-```
-**Test associé :** `test_invalid_email_shows_flash_message()` ✅
 
 ### Amélioration Bonus : Persistance des réservations
 **Problème identifié :** Les réservations n'étaient pas persistantes entre les sessions  
