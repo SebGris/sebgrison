@@ -2,18 +2,12 @@
 ## Débuggez et testez un système de gestion de tournois
 
 ---
-
 ## 1. Introduction (2 minute)
-
 Bonjour Sam
 Suite au succès de notre plateforme nationale, nous développons une version régionale simplifiée.
 Les secrétaires de clubs pourront y réserver des places pour leurs athlètes en échangeant des points contre des inscriptions aux compétitions.
 En tant que nouveau développeur dans l'équipe, j'ai été chargé de corriger les bugs identifiés dans le prototype et d'implémenter une suite de tests complète pour garantir la qualité du code.
-
----
-
 ## 2. Workflow Git et Branches (2 minutes)
-
 ### Structure des branches créées
 ```
 master                      # Code stable final (91% couverture)
@@ -23,17 +17,16 @@ master                      # Code stable final (91% couverture)
 ├── fix/email              # Bug #4 - Validation email
 └── test/performance-locust # Tests de performance
 ```
-
+```bash
+git branch
+```
 ### Respect du guide de développement
 - ✅ Une branche par bug/fonctionnalité
 - ✅ Tests avant merge dans master
 - ✅ Commits descriptifs (fix:, test:, feat:)
 
 ---
-
 ## 3. Bugs Corrigés depuis GitHub Issues (5 minutes)
-
-📌 **Repository :** [OpenClassrooms-Student-Center/Python_Testing/issues](https://github.com/OpenClassrooms-Student-Center/Python_Testing/issues)
 
 ### Issue #1 : Réservations sur compétitions passées
 **GitHub Issue :** "Users can book places on past competitions"  
