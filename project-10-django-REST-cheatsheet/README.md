@@ -1,98 +1,143 @@
-# 🌐 Projet 10 Django REST - Aide-mémoire
+# 🌐 SoftDesk API - Projet 10 OpenClassrooms
 
-## Installation à partir de zéro
-### **Étape 1 : Créer le fichier requirements.txt**
+## 📋 Présentation
 
-```txt
-Django==3.2.5
-djangorestframework==3.12.4
-```
+**SoftDesk** est une API REST sécurisée développée avec Django REST Framework pour la gestion collaborative de projets avec système de tickets (issues) et commentaires.
 
-### **Étape 2 : Créer et activer un environnement virtuel**
+### ✨ Fonctionnalités principales
+- 🔐 **Authentification JWT** sécurisée avec refresh tokens  
+- 👥 **Gestion des contributeurs** par projet avec permissions granulaires
+- 🎫 **Système de tickets (issues)** avec assignations et priorités
+- 💬 **Commentaires** sur les issues
+- 🛡️ **Sécurité RGPD** avec consentement et gestion des données
+- ⚡ **Optimisations Green Code** pour les performances
 
-Il est recommandé d’utiliser un environnement virtuel pour isoler les dépendances de votre projet.
-Dans le terminal de Visual Studio Code, exécutez :
+## 📚 Documentation complète
+
+### 🚀 Guides de démarrage
+- **[Installation et configuration](#-installation-et-lancement-rapide)** - Setup complet avec Poetry
+
+## 🚀 Installation et lancement rapide
+
+### Prérequis
+- Python 3.12+
+- Poetry (gestionnaire de dépendances)
+
+### 1. Installation de Poetry
+
 ```bash
-python -m venv venv
+# Installer pipx
+python -m pip install --user pipx
+python -m pipx ensurepath
+
+# Redémarrer le terminal ou VS Code, puis :
+pipx install poetry
+poetry --version
 ```
-Pour activer exécutez :
+
+### 2. Installation du projet
+
 ```bash
-venv\Scripts\activate
+# Cloner le repository
+git clone https://github.com/SebGris/project-10-django-REST.git
+cd project-10-django-REST
+
+# Installer les dépendances
+poetry install
+
+# Vérifier l'installation
+poetry run python --version
+poetry run python -c "import django; print(f'Django {django.get_version()}')"
 ```
 
-### **Étape 3 : Installer les dépendances Python**
+### 3. Configuration de la base de données
 
-Installez les dépendances nécessaires :
 ```bash
-pip install -r requirements.txt
+# Créer les migrations
+poetry run python manage.py makemigrations users
+poetry run python manage.py makemigrations issues
+poetry run python manage.py makemigrations
+
+# Appliquer les migrations
+poetry run python manage.py migrate
 ```
 
-### **Étape 4 : Mettre à jour le fichier requirements.txt**
+### 4. Créer un superutilisateur
 
-Après installation, mettez à jour le fichier requirements.txt avec toutes les dépendances installées par Django :
 ```bash
-pip freeze > requirements.txt
+# Méthode recommandée (script personnalisé)
+poetry run python create_superuser.py
+
+# Ou méthode Django standard
+poetry run python manage.py createsuperuser
 ```
 
-### **Étape 5 : Créer une application Django**
+**Identifiants par défaut du script :**
+- Username: `admin`
+- Email: `admin@softdesk.local`
+- Password: `SoftDesk2025!`
 
-Créez un nouveau projet Django :
+### 5. Lancer le serveur
+
 ```bash
-django-admin startproject softdesk_support
-cd softdesk_support
+poetry run python manage.py runserver
 ```
 
-#### Créer la base de données du projet
-Appliquez les migrations initiales :
+🎉 **L'API est accessible à :** http://127.0.0.1:8000/
+
+## 🧪 Vérifier l'installation
+
+### Tests de base
 ```bash
-python manage.py migrate
+# Test de configuration Django
+poetry run python manage.py check
 ```
 
-#### Créer une application
-Créez une application dans le projet :
+### Interface d'administration
+- URL : http://127.0.0.1:8000/admin/
+- Connexion avec le superutilisateur créé
+
+### Interface API
+- URL : http://127.0.0.1:8000/api/
+- Documentation interactive Django REST Framework
+
+## 📋 Endpoints principaux
+
+| Endpoint | Méthode | Description | Auth | Body Format |
+|----------|---------|-------------|------|-------------|
+| `/api/token/` | POST | Obtenir token JWT | Non | `{"username": "user", "password": "pass"}` |
+| `/api/users/` | POST | Inscription | Non | `{"username": "user", "email": "...", "password": "..."}` |
+| `/api/users/` | GET | Liste utilisateurs | Oui | - |
+| `/api/projects/` | GET/POST | Projets | Oui | `{"name": "...", "description": "...", "type": "back-end"}` |
+| `/api/projects/{id}/` | GET/PUT/DELETE | Détails projet | Oui | - |
+| `/api/projects/{id}/add_contributor/` | POST | Ajouter contributeur | Oui | `{"user_id": 1}` |
+| `/api/projects/{project_id}/issues/` | GET/POST | Issues du projet | Oui | `{"name": "...", "description": "...", "tag": "BUG", "assigned_to": 1}` |
+| `/api/projects/{project_id}/issues/{issue_id}/comments/` | GET/POST | Commentaires d'une issue | Oui | `{"description": "..."}` |
+
+### Valeurs autorisées pour les champs :
+- **Project.type** : `"back-end"`, `"front-end"`, `"iOS"`, `"Android"`
+- **Issue.priority** : `"LOW"`, `"MEDIUM"`, `"HIGH"`
+- **Issue.tag** : `"BUG"`, `"FEATURE"`, `"TASK"`
+- **Issue.status** : `"To Do"`, `"In Progress"`, `"Finished"`
+
+## 🔐 Authentification JWT
+
+### Obtenir un token
 ```bash
-python manage.py startapp issues
+curl -X POST http://127.0.0.1:8000/api/token/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "SoftDesk2025!"}'
 ```
 
-#### Configurer l'application
-N'oubliez pas d'ajouter votre application dans `settings.py` :
-```python
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',  # Django REST Framework
-    'issues',          # Votre application
-]
-```
-
-#### Tester le serveur de développement
-Démarrez le serveur pour vérifier que tout fonctionne :
+### Utiliser le token
 ```bash
-python manage.py runserver
-```
-Ouvrez http://127.0.0.1:8000/ dans votre navigateur pour vérifier que le site Django fonctionne.
-Tapez Ctrl+C pour arrêter le serveur.
-
-### **Étape 6 : Activer l'authentification DRF**
-
-Ajoutez l'authentification Django REST Framework dans le fichier `urls.py` principal du projet :
-
-```python
-from django.contrib import admin
-from django.urls import path, include
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-]
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  http://127.0.0.1:8000/api/projects/
 ```
 
-Cette configuration permet d'utiliser l'interface d'authentification web de DRF accessible à l'adresse http://127.0.0.1:8000/api-auth/login/
+## 🚨 Résolution des problèmes
 
+<<<<<<< HEAD
 ### **Étape 7 : Créer un superutilisateur**
 
 Créez un compte administrateur pour accéder à l'interface d'administration Django :
@@ -192,45 +237,96 @@ Cette page d'accueil :
 Visitez http://127.0.0.1:8000/ pour voir la page d'accueil de votre API !
 
 ## 🔧 **Commandes de dépannage**
+=======
+### Erreurs courantes
+>>>>>>> c11c2c4b542ac4b7aef4b6ab9d0d497f8a643146
 
-### **En cas de problème**
+**"No module named 'softdesk_support'"**
 ```bash
-# Vérifier l'environnement virtuel
-venv\Scripts\activate
-python -c "import sys; print(sys.prefix)"
-
-# Réinstaller les dépendances
-pip install -r requirements.txt --force-reinstall
-
-# Vérifier Python
-python --version  # Doit être 3.8+
+# Utiliser Poetry au lieu de Python directement
+poetry run python (etc)
 ```
 
-### **Commandes Django utiles**
+**Erreurs de migration**
 ```bash
-# Créer un nouveau projet Django
-django-admin startproject nom_du_projet
-
-# Créer une nouvelle app
-python manage.py startapp nom_de_lapp
-
-# Créer et appliquer les migrations
-python manage.py makemigrations
-python manage.py migrate
-
-# Créer un superutilisateur
-python manage.py createsuperuser
-
-# Lancer le serveur de développement
-python manage.py runserver
-
-# Collecter les fichiers statiques
-python manage.py collectstatic
-
-# Tests
-python manage.py test
+# Réinitialiser la base de données
+rm db.sqlite3  # Linux/Mac
+del db.sqlite3  # Windows
+poetry run python manage.py migrate
 ```
 
-## 📄 Aide
+### Diagnostic complet
+```bash
+poetry run python manage.py check
+```
 
-https://openclassrooms.com/fr/courses/7172076-debutez-avec-le-framework-django/7514454-installez-django-avec-pip
+## 🛠️ Développement
+
+### Structure du projet
+```
+project-10-django-REST/
+├── manage.py                # Gestionnaire Django
+├── pyproject.toml           # Configuration Poetry
+├── users/                   # App utilisateurs (auth, profils)
+├── issues/                  # App projets (projects, issues, comments)
+├── softdesk_support/        # Configuration Django
+└── tests/                   # non utilisé
+```
+
+### Commandes utiles
+```bash
+# 🚀 Commandes rapides (après configuration)
+poetry run server          # Démarrer le serveur
+poetry run migrate         # Appliquer les migrations
+poetry run makemigrations  # Créer les migrations
+poetry run shell          # Shell Django
+
+# Ou avec Makefile
+make server               # Démarrer le serveur
+make migrate              # Appliquer les migrations
+make install              # Installation complète
+
+# Commandes classiques
+poetry run python manage.py runserver
+poetry run python manage.py migrate
+poetry run python manage.py makemigrations
+
+# Linting et formatage avec Ruff
+poetry run ruff check .           # Vérifier le code
+poetry run ruff check . --fix     # Corriger automatiquement
+poetry run ruff format .          # Formater le code
+poetry run ruff check . --output-format=full  # Format détaillé
+```
+
+## 📄 Ressources
+
+- [Django Documentation](https://docs.djangoproject.com/)
+- [Django REST Framework](https://www.django-rest-framework.org/)
+- [Poetry Documentation](https://python-poetry.org/docs/)
+- [Django - Saving objects](https://docs.djangoproject.com/en/5.2/ref/models/instances/#saving-objects)
+- [Django - Overriding model methods](https://docs.djangoproject.com/en/5.2/topics/db/models/#overriding-model-methods)
+- [DRF ViewSets](https://www.django-rest-framework.org/api-guide/viewsets/)
+- [DRF Authentication](https://www.django-rest-framework.org/api-guide/authentication/)
+- [DRF Permissions](https://www.django-rest-framework.org/api-guide/permissions/)
+- [SimpleJWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)
+- [JWT Authentication in Django](https://code.tutsplus.com/how-to-authenticate-with-jwt-in-django--cms-30460t)
+- [Tutoriel vidéo JWT _ Découverte du JWT _ Grafikart](https://grafikart.fr/tutoriels/json-web-token-presentation-958)
+- [JSON Web Token (JWT) Le guide complet](https://www.primfx.com/json-web-token-jwt-guide-complet)
+
+## 🎯 Codes de Statut HTTP
+
+| Code | Nom | Contextes dans votre API |
+|------|-----|--------------------------|
+| 200 | OK | Récupération de données, modifications réussies |
+| 201 | Created | Création d'utilisateurs, projets, issues, commentaires |
+| 204 | No Content | Suppressions réussies |
+| 400 | Bad Request | Données invalides, validation échouée |
+| 401 | Unauthorized | Token manquant/invalide/expiré |
+| 403 | Forbidden | Permissions insuffisantes |
+| 404 | Not Found | Ressource inexistante |
+| 405 | Method Not Allowed | Méthode HTTP non supportée |
+| 500 | Internal Server Error | Erreurs serveur |
+
+---
+
+**Projet réalisé dans le cadre de la formation OpenClassrooms "Développeur d'application Python"**
