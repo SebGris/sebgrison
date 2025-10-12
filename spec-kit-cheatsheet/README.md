@@ -2,7 +2,22 @@
 
 [Guide complet](https://github.com/github/spec-kit/blob/main/spec-driven.md)
 
-# ⚡ Get started
+# ⚡ Installation permanente (recommandée)
+
+Installer une fois et utiliser partout :
+```bash
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+```
+
+# ⚡ Installation uv
+
+**uv** est un gestionnaire de paquets et d'outils Python ultra-rapide écrit en Rust. Il remplace avantageusement pip, pip-tools, pipx, poetry, pyenv, et virtualenv en offrant des performances jusqu'à 100x plus rapides. uv permet d'installer et de gérer des outils CLI Python (comme `specify-cli`) de manière isolée, similaire à `pipx`, mais avec une vitesse d'exécution exceptionnelle.
+
+```bash
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+# ⚡ Démarrer
 
 ## Étape 1
 Utilisez l'outil directement :
