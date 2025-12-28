@@ -78,8 +78,8 @@ Le conteneur définit **comment construire** chaque dépendance :
 from dependency_injector import containers, providers
 
 class Container(containers.DeclarativeContainer):
-    # Session de base de données
-    db_session = providers.Factory(get_db_session)
+    # Session de base de données (Resource pour gestion du cycle de vie)
+    db_session = providers.Resource(get_db_session)
 
     # Repository
     client_repository = providers.Factory(
@@ -96,6 +96,7 @@ class Container(containers.DeclarativeContainer):
 
 **Types de providers :**
 - `Factory` : Crée une nouvelle instance à chaque appel
+- `Resource` : Gère les ressources avec cycle de vie (comme les sessions DB)
 - `Singleton` : Crée une seule instance réutilisée partout
 - `Configuration` : Gère la configuration de l'application
 
@@ -348,12 +349,12 @@ def my_command(...):
     service2 = Container().service2()  # Container 2 (inutile)
 ```
 
-### 2. Utiliser des Factory pour les sessions DB
+### 2. Utiliser Resource pour les sessions DB
 
 ```python
 class Container(containers.DeclarativeContainer):
-    # ✅ Factory = Nouvelle session à chaque appel
-    db_session = providers.Factory(get_db_session)
+    # ✅ Resource = Gère le cycle de vie de la session
+    db_session = providers.Resource(get_db_session)
 
     # ❌ Singleton = Même session réutilisée (dangereux !)
     # db_session = providers.Singleton(get_db_session)

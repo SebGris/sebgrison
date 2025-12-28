@@ -64,7 +64,7 @@ class Department(str, Enum):
 
 #### 3. Sécurité du mot de passe
 - `password_hash` : ne stocke JAMAIS le mot de passe en clair
-- Méthodes `set_password()` et `verify_password()` préparées pour utiliser **bcrypt** via passlib
+- Utilisation de **bcrypt** pour le hachage des mots de passe
 - Bcrypt est un algorithme de hachage adaptatif (résistant aux attaques par force brute)
 
 #### 4. Timestamps automatiques
@@ -108,13 +108,15 @@ sales_contact_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=F
 - Base de données rejette automatiquement les insertions duplicates
 - Crée un index automatique pour optimiser les recherches
 
-#### 3. Relationships commentées
+#### 3. Relationships actives
 ```python
-# sales_contact: Mapped["User"] = relationship("User", back_populates="clients")
+sales_contact: Mapped["User"] = relationship("User", back_populates="clients", lazy="select")
+contracts: Mapped[List["Contract"]] = relationship("Contract", back_populates="client", lazy="select")
 ```
-- Préparé mais commenté pour éviter les imports circulaires
+- Les relations sont actives et utilisent `TYPE_CHECKING` pour éviter les imports circulaires
 - `relationship()` crée la navigation objet : `client.sales_contact.username`
 - `back_populates` crée la relation bidirectionnelle
+- `lazy="select"` charge les relations à la demande
 
 ---
 
@@ -285,24 +287,13 @@ def __repr__(self) -> str:
 
 ## Points d'amélioration Future
 
-### 1. Activation des relationships
-Actuellement commentées pour éviter les imports circulaires :
-```python
-# sales_contact: Mapped["User"] = relationship("User", back_populates="clients")
-```
-
-**À activer pour :**
-- Navigation objet simplifiée
-- Chargement automatique des relations (lazy/eager loading)
-- Meilleure expérience développeur
-
-### 2. Soft delete
+### 1. Soft delete
 Ajouter un champ `deleted_at` pour ne pas supprimer physiquement les données :
 ```python
 deleted_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
 ```
 
-### 3. Indexes supplémentaires
+### 2. Indexes supplémentaires
 Pour optimiser les requêtes fréquentes :
 ```python
 __table_args__ = (
@@ -334,18 +325,17 @@ __table_args__ = (
 - Protection contre les modifications directes de la base
 - Documentation vivante des règles métier
 
-### Q4 : Pourquoi ne pas activer les relationships maintenant ?
+### Q4 : Comment gérez-vous les imports circulaires avec les relationships ?
 **Réponse :**
-- Évite les imports circulaires pendant le développement initial
-- Sera activé lors de l'implémentation des repositories
-- Approche itérative : modèles d'abord, relations ensuite
+- Utilisation de `TYPE_CHECKING` pour les imports de type uniquement
+- Les imports dans le bloc `if TYPE_CHECKING:` ne sont pas exécutés à runtime
+- Permet d'avoir les relations actives tout en évitant les imports circulaires
 
 ### Q5 : Comment gérez-vous la sécurité des mots de passe ?
 **Réponse :**
-- Hash avec bcrypt (via passlib)
+- Hash avec bcrypt
 - Jamais de stockage en clair
 - Coût adaptatif contre les attaques par force brute
-- Méthodes `set_password()` et `verify_password()` dédiées
 
 ### Q6 : Pourquoi utiliser `server_default=func.now()` au lieu de `default=datetime.now(timezone.utc)` ?
 **Réponse :**

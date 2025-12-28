@@ -149,6 +149,7 @@ Table des contrats commerciaux entre Epic Events et les clients.
 | **remaining_amount** | NUMERIC(10,2) | NOT NULL, CHECK ≥ 0, CHECK ≤ total | Montant restant à payer |
 | **is_signed** | BOOLEAN | NOT NULL, DEFAULT FALSE, INDEX | Statut de signature |
 | **created_at** | DATETIME | NOT NULL, DEFAULT NOW | Date de création |
+| **updated_at** | DATETIME | NOT NULL, DEFAULT NOW | Date de dernière modification |
 
 **Relations:**
 - `N:1` avec **CLIENTS** (via `client_id`) - Chaque contrat appartient à un client
@@ -320,7 +321,7 @@ SELECT * FROM events WHERE support_contact_id IS NULL
 
 Le schéma est géré par **Alembic** pour versionner les changements de structure.
 
-### Migration initiale (ed491b2bb0cd)
+### Migration initiale (9492cd9f1416)
 
 ```bash
 # Créer migration automatique
@@ -336,7 +337,7 @@ poetry run alembic downgrade -1
 ### Fichier de migration généré
 
 ```python
-# migrations/versions/ed491b2bb0cd_initial_tables.py
+# migrations/versions/9492cd9f1416_initial_migration_create_users_clients_.py
 def upgrade():
     # Créer table users
     op.create_table('users', ...)
@@ -358,8 +359,7 @@ def upgrade():
 - **ORM**: SQLAlchemy 2.0+ (Mapped, Declarative Base)
 - **Migrations**: Alembic (versionning de schéma)
 - **Base de données**: SQLite
-- **Hashing**: passlib + bcrypt (mots de passe)
-- **Validation**: Pydantic v2 (schémas de données)
+- **Hashing**: bcrypt (mots de passe)
 
 ---
 
@@ -399,10 +399,10 @@ erDiagram
 
     Contract {
         int id PK
+        int client_id FK "NOT NULL -> clients.id"
         decimal total_amount "NOT NULL, NUMERIC(10,2), >= 0"
         decimal remaining_amount "NOT NULL, NUMERIC(10,2), >= 0, <= total_amount"
         boolean is_signed "NOT NULL, DEFAULT FALSE"
-        int client_id FK "NOT NULL -> clients.id"
         datetime created_at "DEFAULT NOW()"
         datetime updated_at "DEFAULT NOW()"
     }
@@ -434,5 +434,5 @@ erDiagram
 
 ---
 
-**Dernière mise à jour**: 2025-10-06
-**Version du schéma**: 1.0 (Migration initiale ed491b2bb0cd)
+**Dernière mise à jour**: 2025-12-28
+**Version du schéma**: 1.0 (Migration initiale 9492cd9f1416)
