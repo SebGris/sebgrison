@@ -28,28 +28,17 @@
 
 ### Script de présentation
 
-> "Bonjour, je vais vous présenter Epic Events CRM, une application CLI sécurisée de gestion de la relation client pour une entreprise d'événementiel.
+> "Bonjour Dawn, je vais vous présenter le système CRM que j'ai développé pour notre entreprise. Cette application CLI permet à nos équipes de gérer nos clients, contrats et événements.
 >
-> L'application respecte toutes les exigences de sécurité du cahier des charges :
+> L'application respecte toutes les exigences de sécurité que vous m'aviez demandées :
 > - ✅ **Protection contre les injections SQL** avec SQLAlchemy ORM
 > - ✅ **Principe du moindre privilège** avec RBAC (Role-Based Access Control)
 > - ✅ **Authentification persistante** avec tokens JWT
 > - ✅ **Journalisation avec Sentry** pour le monitoring
 >
-> L'architecture suit le pattern Clean Architecture avec séparation en couches : modèles, repositories, services, et interface CLI."
-
-### Affichage visuel
-
-Montrer rapidement l'arborescence du projet :
-
-```bash
-tree src -L 2
-```
-
-**Points clés à mentionner** :
-- Architecture en couches
-- Séparation des responsabilités
-- Injection de dépendances
+> *Note : L'architecture suit le pattern Clean Architecture avec séparation des responsabilités : modèles, services, repositories et interface CLI."*
+>
+> *Note : CLI = Command Line Interface (interface en ligne de commande)*
 
 ---
 
@@ -83,7 +72,7 @@ poetry run epicevents login
 ```
 
 **Dire** :
-> "Je me connecte avec un utilisateur du département GESTION. L'application génère un token JWT signé avec HMAC-SHA256, valide pour 24 heures, et le stocke dans `C:\Users\<nom utilisateur>\.epicevents\token` sous Windows ou `~/.epicevents/token` sous Linux/Mac.
+> "Je me connecte avec un utilisateur du département GESTION. L'application génère un token JWT signé avec HMAC-SHA256, valide pour 24 heures, et le stocke dans `C:\Users\<nom utilisateur>\.epicevents\token` sous Windows.
 >
 > Notez le message '[INFO] Sentry initialisé' - toutes les actions sont loggées dans Sentry pour le monitoring de sécurité."
 
@@ -104,7 +93,7 @@ poetry run epicevents whoami
 ```
 
 **Dire** :
-> "La commande whoami affiche maintenant les informations de l'utilisateur authentifié. Le token JWT a été validé."
+> "La commande whoami affiche maintenant les informations de l'utilisateur authentifié."
 
 **Résultat attendu** :
 ```
@@ -293,7 +282,7 @@ poetry run epicevents update-contract
 
 ### Script de conclusion
 
-> "En résumé, l'application Epic Events CRM implémente :
+> "En résumé, Dawn, le système CRM que j'ai développé pour Epic Events implémente :
 >
 > **1. Authentification sécurisée**
 > - Tokens JWT signés HMAC-SHA256
@@ -316,7 +305,7 @@ poetry run epicevents update-contract
 > - Logging des tentatives de connexion
 > - Breadcrumbs et contexte utilisateur
 >
-> L'application est prête pour la production."
+> Le système est prêt pour être déployé auprès de nos équipes."
 
 ---
 
