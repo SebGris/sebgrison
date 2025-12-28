@@ -7,7 +7,7 @@
 - ✅ Mettre à jour les clients dont ils sont responsables
 - ✅ Modifier/mettre à jour les contrats des clients dont ils sont responsables
 - ✅ Filtrer l'affichage des contrats (contrats non signés, non entièrement payés)
-- ⚠️ Créer un événement pour un de leurs clients qui a signé un contrat
+- ✅ Créer un événement pour un de leurs clients qui a signé un contrat
 
 ---
 
@@ -15,7 +15,7 @@
 
 **Commande:** `create-client`
 
-**Fichier:** [src/cli/commands.py:211-359](src/cli/commands.py#L211-L359)
+**Fichier:** [src/cli/commands/client_commands.py](src/cli/commands/client_commands.py)
 
 ### Code de la fonctionnalité
 
@@ -64,7 +64,7 @@ def create_client(
 
 **Commande:** `update-client`
 
-**Fichier:** [src/cli/commands.py:1335-1477](src/cli/commands.py#L1335-L1477)
+**Fichier:** [src/cli/commands/client_commands.py](src/cli/commands/client_commands.py)
 
 ### Code de la fonctionnalité
 
@@ -112,7 +112,7 @@ def update_client(
 
 **Commande:** `update-contract`
 
-**Fichier:** [src/cli/commands.py:1480-1631](src/cli/commands.py#L1480-L1631)
+**Fichier:** [src/cli/commands/contract_commands.py](src/cli/commands/contract_commands.py)
 
 ### Code de la fonctionnalité
 
@@ -163,7 +163,7 @@ def update_contract(
 
 **Commande:** `filter-unsigned-contracts`
 
-**Fichier:** [src/cli/commands.py:1107-1154](src/cli/commands.py#L1107-L1154)
+**Fichier:** [src/cli/commands/contract_commands.py](src/cli/commands/contract_commands.py)
 
 ```python
 @app.command()
@@ -209,7 +209,7 @@ def filter_unsigned_contracts():
 
 **Commande:** `filter-unpaid-contracts`
 
-**Fichier:** [src/cli/commands.py:1157-1208](src/cli/commands.py#L1157-L1208)
+**Fichier:** [src/cli/commands/contract_commands.py](src/cli/commands/contract_commands.py)
 
 ```python
 @app.command()
@@ -269,7 +269,7 @@ def filter_unpaid_contracts():
 
 **Commande:** `create-event`
 
-**Fichier:** [src/cli/commands.py:822-1025](src/cli/commands.py#L822-L1025)
+**Fichier:** [src/cli/commands/event_commands.py](src/cli/commands/event_commands.py)
 
 ### Code de la fonctionnalité
 
@@ -424,8 +424,8 @@ Toutes les exigences du cahier des charges pour l'équipe commerciale sont maint
 
 En plus des exigences du cahier des charges, votre code implémente également :
 
-1. **`sign-contract`** ([lines 610-703](src/cli/commands.py#L610-L703)) - Permet à un commercial de signer un contrat pour ses clients
-2. **`update-contract-payment`** ([lines 706-819](src/cli/commands.py#L706-L819)) - Permet d'enregistrer un paiement pour un contrat
+1. **`sign-contract`** ([src/cli/commands/contract_commands.py](src/cli/commands/contract_commands.py)) - Permet à un commercial de signer un contrat pour ses clients
+2. **`update-contract-payment`** ([src/cli/commands/contract_commands.py](src/cli/commands/contract_commands.py)) - Permet d'enregistrer un paiement pour un contrat
 
 Ces deux commandes incluent bien les vérifications de propriété nécessaires.
 
