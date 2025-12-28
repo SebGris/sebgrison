@@ -83,7 +83,7 @@ class Container(containers.DeclarativeContainer):
 ```
 
 **Ce qui se passe** :
-- Le container définit comment créire chaque composant
+- Le container définit comment créer chaque composant
 - `Resource` : Gère le cycle de vie de la session DB (création/fermeture)
 - `Factory` : Crée une nouvelle instance à chaque appel
 - Les dépendances sont injectées automatiquement (ex: `client_service` reçoit `client_repository`)
