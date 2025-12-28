@@ -8,11 +8,13 @@
 
 ### Partie 1 : Présentation des livrables (10 minutes)
 
-1. [Vue d'ensemble du projet](#1-vue-densemble-du-projet-1-minute)
-2. [Démonstration - Authentification](#2-démonstration---authentification-3-minutes)
-3. [Démonstration - Gestion des utilisateurs](#3-démonstration---gestion-des-utilisateurs-2-minutes)
-4. [Démonstration - Lecture et modification des données](#4-démonstration---lecture-et-modification-des-données-3-minutes)
-5. [Récapitulatif de sécurité](#5-récapitulatif-de-sécurité-1-minute)
+> **6 commandes CLI + explications de code**
+
+1. [Vue d'ensemble](#1-vue-densemble-30-sec) (30 sec)
+2. [Authentification](#2-authentification-3-min) - 2 commandes + code (3 min)
+3. [Création utilisateur - RBAC](#3-création-dutilisateur---rbac-2-min-30) - 2 commandes + code (2 min 30)
+4. [Lecture/Modification des données](#4-lecturemodification-des-données-3-min) - 2 commandes + code (3 min)
+5. [Récapitulatif](#5-récapitulatif-1-min) (1 min)
 
 ### Partie 2 : Discussion technique (15 minutes)
 
@@ -24,290 +26,174 @@
 
 # PARTIE 1 : PRÉSENTATION DES LIVRABLES (10 minutes)
 
-## 1. Vue d'ensemble du projet (1 minute)
-
-### Script de présentation
-
-> "Bonjour Dawn, je vais vous présenter le système CRM que j'ai développé pour notre entreprise. Cette application CLI permet à nos équipes de gérer nos clients, contrats et événements.
->
-> L'application respecte toutes les exigences de sécurité que vous m'aviez demandées :
-> - ✅ **Protection contre les injections SQL** avec SQLAlchemy ORM
-> - ✅ **Principe du moindre privilège** avec RBAC (Role-Based Access Control)
-> - ✅ **Authentification persistante** avec tokens JWT
-> - ✅ **Journalisation avec Sentry** pour le monitoring
->
-> *Note : L'architecture suit le pattern Clean Architecture avec séparation des responsabilités : modèles, services, repositories et interface CLI."*
->
-> *Note : CLI = Command Line Interface (interface en ligne de commande)*
->
-> *Note : Repository = Selon Martin Fowler (Patterns of Enterprise Application Architecture), "Mediates between the domain and data mapping layers using a collection-like interface for accessing domain objects." En français : composant qui fait l'intermédiaire entre le domaine métier et la couche d'accès aux données, en utilisant une interface de type collection. Techniquement, c'est une classe abstraite (interface) définissant les opérations CRUD (create, read, update, delete), implémentée par une classe concrète (ex: `SqlAlchemyClientRepository` implémente `ClientRepositoryInterface`). Cela permet d'inverser les dépendances : le service dépend de l'interface, pas de l'implémentation. Ref: https://martinfowler.com/eaaCatalog/repository.html*
+> **⚠️ IMPORTANT** : Cette démonstration combine commandes CLI + explications de code.
+> Ouvrir VS Code avec le projet AVANT la soutenance.
 
 ---
 
-## 2. Démonstration - Authentification (3 minutes)
+## 1. Vue d'ensemble (30 sec)
 
-### 🎯 Objectif
-Démontrer que l'authentification JWT fonctionne et protège l'accès aux commandes.
+**Dire** :
+> "Bonjour Dawn, je vais vous présenter le système CRM Epic Events. C'est une application CLI sécurisée avec :
+> - Authentification JWT
+> - Contrôle d'accès RBAC (3 départements)
+> - Protection injection SQL via SQLAlchemy
+> - Monitoring Sentry"
 
-### 📝 Script de démonstration
+---
 
-#### Étape 1 : Tentative d'accès sans authentification (30 sec)
+## 2. Authentification (3 min)
+
+### Commande 1 : Tentative sans auth
 
 ```bash
 poetry run epicevents whoami
 ```
 
+**Dire** : "Sans authentification, accès refusé."
+
+### 💻 Montrer le code : `src/cli/permissions.py` (lignes 59-64)
+
+```python
+if not user:
+    print_separator()
+    print_error(MSG_NOT_LOGGED_IN)
+    print_error(MSG_LOGIN_HINT)
+    print_separator()
+    raise typer.Exit(code=1)
+```
+
 **Dire** :
-> "Sans authentification, l'accès est refusé. Le message d'erreur invite l'utilisateur à se connecter."
+> "Le décorateur `@require_department` vérifie l'authentification AVANT chaque commande. Si pas de token valide → refus immédiat."
 
-**Résultat attendu** :
-```
-[ERREUR] Vous n'êtes pas connecté. Utilisez 'epicevents login' pour vous connecter.
-```
-
-#### Étape 2 : Connexion avec un utilisateur GESTION (1 min)
+### Commande 2 : Connexion GESTION
 
 ```bash
 poetry run epicevents login
-# Username: admin
-# Password: Admin123!
+# admin / Admin123!
+```
+
+### 💻 Montrer le code : `src/services/auth_service.py` (lignes 97-109)
+
+```python
+def generate_token(self, user: User) -> str:
+    payload = {
+        "user_id": user.id,
+        "exp": now + timedelta(hours=24),  # Expiration 24h
+    }
+    return jwt.encode(payload, self._secret_key, algorithm="HS256")
 ```
 
 **Dire** :
-> "Je me connecte avec un utilisateur du département GESTION. L'application génère un token JWT signé avec HMAC-SHA256, valide pour 24 heures, et le stocke dans `C:\Users\<nom utilisateur>\.epicevents\token` sous Windows.
->
-> Notez le message '[INFO] Sentry initialisé' - toutes les actions sont loggées dans Sentry pour le monitoring de sécurité."
-
-**Résultat attendu** :
-```
-[INFO] Sentry non configuré (SENTRY_DSN manquant)
-+-----------------------------------------------------------------------------+
-| ✓ Bienvenue Alice Dubois !                                                 |
-| Département : GESTION                                                       |
-| Session     : Valide pour 24 heures                                        |
-+-----------------------------------------------------------------------------+
-```
-
-#### Étape 3 : Vérification de l'utilisateur connecté (30 sec)
-
-```bash
-poetry run epicevents whoami
-```
-
-**Dire** :
-> "La commande whoami affiche maintenant les informations de l'utilisateur authentifié."
-
-**Résultat attendu** :
-```
-+-----------------------------------------------------------------------------+
-| ID                : 1                                                       |
-| Nom d'utilisateur : admin                                                   |
-| Nom complet       : Alice Dubois                                            |
-| Email             : admin@epicevents.com                                    |
-| Département       : GESTION                                                 |
-+-----------------------------------------------------------------------------+
-```
-
-#### Étape 4 : Localisation du token JWT (30 sec)
-
-```bash
-# Windows
-echo "Token stocké dans : %USERPROFILE%\.epicevents\token"
-type %USERPROFILE%\.epicevents\token
-```
-
-**Dire** :
-> "Le token JWT est stocké localement avec des permissions restreintes (600 sur Unix). Voici le token - c'est une chaîne encodée en trois parties séparées par des points : header, payload, et signature."
-
-#### Étape 5 : Déconnexion (30 sec)
-
-```bash
-poetry run epicevents logout
-```
-
-**Dire** :
-> "La déconnexion supprime le token JWT. Sentry enregistre également cette action avec un breadcrumb."
+> "Le token JWT est signé avec HMAC-SHA256. La clé secrète vient des variables d'environnement, jamais hardcodée."
 
 ---
 
-## 3. Démonstration - Gestion des utilisateurs (2 minutes)
+## 3. Création d'utilisateur - RBAC (2 min 30)
 
-### 🎯 Objectif
-Démontrer le contrôle d'accès basé sur les rôles (RBAC).
-
-### 📝 Script de démonstration
-
-#### Étape 1 : Connexion en tant que GESTION (30 sec)
-
-```bash
-poetry run epicevents login
-# Username: admin
-# Password: Admin123!
-```
-
-**Dire** :
-> "Seul le département GESTION peut créer des utilisateurs. Je me reconnecte avec admin."
-
-#### Étape 2 : Création d'un utilisateur (1 min)
+### Commande 3 : Créer un utilisateur (connecté admin/GESTION)
 
 ```bash
 poetry run epicevents create-user
-# Username: demo_user
-# Prénom: Demo
-# Nom: User
-# Email: demo@example.com
-# Téléphone: 0123456789
-# Mot de passe: Demo123!
-# Département: 1 (COMMERCIAL)
+# demo_user / Demo / User / demo@test.com / 0123456789 / Demo123! / 1
+```
+
+### 💻 Montrer le code : `src/cli/commands/user_commands.py` (ligne ~25)
+
+```python
+@app.command()
+@require_department(Department.GESTION)  # ← Seul GESTION autorisé
+def create_user(...):
+```
+
+### 💻 Montrer le code : `src/models/user.py` (lignes 56-60)
+
+```python
+def set_password(self, password: str) -> None:
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode(), salt)
+    self.password_hash = hashed.decode()
 ```
 
 **Dire** :
-> "La création d'un utilisateur nécessite le département GESTION. Le mot de passe est automatiquement hashé avec bcrypt avant d'être stocké. Jamais en clair dans la base de données."
+> "Le mot de passe est hashé avec bcrypt + salt unique. Jamais stocké en clair."
 
-**Résultat attendu** :
-```
-+-----------------------------------------------------------------------------+
-| ✓ Utilisateur demo_user créé avec succès!                                  |
-| ID          : 6                                                             |
-| Nom complet : Demo User                                                     |
-| Email       : demo@example.com                                              |
-| Département : COMMERCIAL                                                    |
-+-----------------------------------------------------------------------------+
-```
-
-#### Étape 3 : Test du contrôle d'accès (30 sec)
+### Commande 4 : Test refus COMMERCIAL
 
 ```bash
-poetry run epicevents logout
-poetry run epicevents login
-# Username: commercial1
-# Password: Commercial123!
-
+poetry run epicevents logout && poetry run epicevents login
+# commercial1 / Commercial123!
 poetry run epicevents create-user
-# (Entrer n'importe quelles données)
 ```
 
-**Dire** :
-> "Un utilisateur COMMERCIAL tente de créer un utilisateur. L'accès est refusé - seul GESTION a cette permission."
-
-**Résultat attendu** :
-```
-[ERREUR] Action non autorisée pour votre département
-[ERREUR] Départements autorisés : GESTION
-[ERREUR] Votre département : COMMERCIAL
-```
+**Dire** : "COMMERCIAL ne peut pas créer d'utilisateurs → refus avec message explicite."
 
 ---
 
-## 4. Démonstration - Lecture et modification des données (3 minutes)
+## 4. Lecture/Modification des données (3 min)
 
-### 🎯 Objectif
-Démontrer les filtres contextuels et la modification sécurisée des données.
-
-### 📝 Script de démonstration
-
-#### Étape 1 : Création d'un client avec auto-assignation (1 min)
+### Commande 5 : Créer un client (connecté commercial1)
 
 ```bash
-# Déjà connecté en tant que commercial1
 poetry run epicevents create-client
-# Prénom: JeanDeux
-# Nom: Dupont
-# Email: jean2.dupont@example.com
-# Téléphone: 0612345678
-# Entreprise: DupontCorp
-# ID contact commercial: (ENTRER pour auto-assignation - valeur par défaut: 0)
+# Jean / Test / jean@test.com / 0612345678 / TestCorp / (ENTRER)
+```
+
+### 💻 Montrer le code : `src/cli/commands/client_commands.py` (lignes 72-79)
+
+```python
+if sales_contact_id == 0:
+    if current_user.department == Department.COMMERCIAL:
+        sales_contact_id = current_user.id  # Auto-assignation
 ```
 
 **Dire** :
-> "Un commercial crée un client. L'ID du contact commercial est automatiquement assigné à l'utilisateur connecté si laissé vide. C'est une fonctionnalité de sécurité qui empêche les commerciaux de s'attribuer les clients des autres."
+> "Auto-assignation : un commercial est automatiquement assigné à ses propres clients. Sécurité contre l'usurpation."
 
-**Résultat attendu** :
-```
-| Contact commercial : Auto-assigné à commercial1                            |
-+-----------------------------------------------------------------------------+
-| ✓ Client Jean Dupont créé avec succès!                                     |
-+-----------------------------------------------------------------------------+
-```
-
-#### Étape 2 : Filtrage des contrats non signés (1 min)
+### Commande 6 : Filtrer contrats non signés
 
 ```bash
 poetry run epicevents filter-unsigned-contracts
 ```
 
-**Dire** :
-> "Les filtres contextuels remplacent les méthodes get_all() dangereuses. Au lieu de récupérer tous les contrats, on applique un filtre métier : 'contrats non signés'. Cela respecte le principe du moindre privilège.
->
-> Aucune méthode get_all() n'existe dans l'application - tout est filtré."
+### 💻 Montrer le code : `src/repositories/sqlalchemy_contract_repository.py`
 
-**Résultat attendu** :
-```
-+-----------------------------------------------------------------------------+
-|                       Contrats non signés                                   |
-+-----------------------------------------------------------------------------+
-| Aucun contrat non signé trouvé                                              |
-+-----------------------------------------------------------------------------+
-```
-
-#### Étape 3 : Modification sécurisée d'un contrat (1 min)
-
-```bash
-# Toujours connecté en tant que commercial1
-poetry run epicevents update-contract
-# ID du contrat: 1
-# Nouveau montant total (laisser vide pour ne pas modifier): 10000
-# Nouveau montant restant (laisser vide pour ne pas modifier): 2000
-# Marquer comme signé ? [y/n]: y
+```python
+def get_unsigned_contracts(self) -> List[Contract]:
+    return self.session.query(Contract).filter_by(is_signed=False).all()
 ```
 
 **Dire** :
-> "Un commercial ne peut modifier que les contrats de ses propres clients. Ici, commercial1 modifie un contrat qui lui appartient. Si un autre commercial tentait de modifier ce contrat, l'accès serait refusé avec un message explicite indiquant à qui appartient le contrat."
+> "Pas de `get_all()` dans l'application. Tout est filtré contextuellement. C'est le principe du moindre privilège."
 
-**Résultat attendu** :
-```
-+-----------------------------------------------------------------------------+
-| ✓ Contrat mis à jour avec succès!                                          |
-| ID               : 1                                                        |
-| Montant total    : 10000.00 €                                               |
-| Montant restant  : 2000.00 €                                                |
-| Signé            : Oui                                                      |
-+-----------------------------------------------------------------------------+
+### 💻 Montrer le code : Protection injection SQL
+
+```python
+# ✅ SQLAlchemy génère des requêtes paramétrées
+session.query(Contract).filter_by(is_signed=False)
+# → SELECT * FROM contracts WHERE is_signed = ?
+
+# ❌ Jamais de concaténation SQL directe
 ```
 
-**Dire ensuite** :
-> "Cette approche garantit que chaque commercial ne peut modifier que ses propres données, respectant ainsi le principe de séparation des responsabilités et du moindre privilège."
+**Dire** :
+> "SQLAlchemy ORM protège contre l'injection SQL avec des requêtes paramétrées."
 
 ---
 
-## 5. Récapitulatif de sécurité (1 minute)
+## 5. Récapitulatif (1 min)
 
-### Script de conclusion
-
-> "En résumé, Dawn, le système CRM que j'ai développé pour Epic Events implémente :
+**Dire** :
+> "En résumé, l'application implémente :
 >
-> **1. Authentification sécurisée**
-> - Tokens JWT signés HMAC-SHA256
-> - Stockage local avec permissions restreintes
-> - Expiration automatique après 24h
+> 1. **Auth JWT** signé HMAC-SHA256, expiration 24h
+> 2. **RBAC** avec décorateur `@require_department`
+> 3. **Bcrypt** pour les mots de passe
+> 4. **ORM SQLAlchemy** contre injection SQL
+> 5. **Filtres contextuels** au lieu de get_all()
+> 6. **Sentry** pour le monitoring
 >
-> **2. Autorisation granulaire**
-> - RBAC avec 3 rôles (COMMERCIAL, GESTION, SUPPORT)
-> - Vérification à chaque commande
-> - Principe du moindre privilège
->
-> **3. Protection des données**
-> - ORM SQLAlchemy contre injection SQL
-> - Validation complète des inputs
-> - Hachage bcrypt des mots de passe
-> - Pas de méthodes get_all()
->
-> **4. Monitoring**
-> - Sentry pour journalisation
-> - Logging des tentatives de connexion
-> - Breadcrumbs et contexte utilisateur
->
-> Le système est prêt pour être déployé auprès de nos équipes."
+> L'architecture suit Clean Architecture : CLI → Services → Repositories → Models."
 
 ---
 
