@@ -141,77 +141,62 @@ def create_user(
     pass
 ```
 
-### Décorateurs disponibles
-
-#### `@require_auth`
-Vérifie que l'utilisateur est authentifié.
-
-```python
-@app.command()
-@require_auth
-def my_command():
-    # Le décorateur vérifie l'authentification
-    # Le current_user est disponible dans kwargs si nécessaire
-    container = Container()
-    # Accéder aux services nécessaires...
-    pass
-```
+### Décorateur disponible
 
 #### `@require_department(dept1, dept2, ...)`
-Vérifie que l'utilisateur appartient à un des départements autorisés.
+Vérifie l'authentification et que l'utilisateur appartient à un des départements autorisés.
 
 ```python
 @app.command()
 @require_department(Department.COMMERCIAL, Department.GESTION)
-def my_command():
+def my_command(current_user: User = None):
     # Accessible uniquement pour COMMERCIAL et GESTION
+    # current_user est injecté automatiquement par le décorateur
     container = Container()
     # Accéder aux services nécessaires...
     pass
 ```
 
-### Fonctions utilitaires
+**Note** : Si aucun département n'est spécifié, le décorateur vérifie uniquement l'authentification.
 
-#### `check_client_ownership(user, client)`
-Vérifie si un utilisateur a le droit d'accéder à un client.
+### Vérification de propriété dans les commandes
+
+Les vérifications de propriété sont effectuées directement dans les commandes CLI.
+
+#### Vérification pour les clients (COMMERCIAL)
 
 ```python
 @app.command()
 @require_department(Department.COMMERCIAL, Department.GESTION)
-def update_client(client_id: int = typer.Option(...), **kwargs):
+def update_client(client_id: int = typer.Option(...), current_user: User = None):
     container = Container()
-    auth_service = container.auth_service()
     client_service = container.client_service()
-
-    # Récupérer l'utilisateur courant depuis kwargs (injecté par le décorateur)
-    current_user = kwargs.get('current_user')
 
     client = client_service.get_client_by_id(client_id)
 
-    if not check_client_ownership(current_user, client):
-        print_error("Vous n'avez pas accès à ce client")
-        raise typer.Exit(code=1)
+    # Vérification de propriété pour les commerciaux
+    if current_user.department == Department.COMMERCIAL:
+        if client.sales_contact_id != current_user.id:
+            print_error("Vous ne pouvez modifier que vos propres clients")
+            raise typer.Exit(code=1)
 ```
 
-#### `check_event_ownership(user, event)`
-Vérifie si un utilisateur a le droit d'accéder à un événement.
+#### Vérification pour les événements (SUPPORT)
 
 ```python
 @app.command()
 @require_department(Department.SUPPORT, Department.GESTION)
-def update_event(event_id: int = typer.Option(...), **kwargs):
+def update_event(event_id: int = typer.Option(...), current_user: User = None):
     container = Container()
-    auth_service = container.auth_service()
     event_service = container.event_service()
-
-    # Récupérer l'utilisateur courant depuis kwargs (injecté par le décorateur)
-    current_user = kwargs.get('current_user')
 
     event = event_service.get_event_by_id(event_id)
 
-    if not check_event_ownership(current_user, event):
-        print_error("Vous n'avez pas accès à cet événement")
-        raise typer.Exit(code=1)
+    # Vérification de propriété pour le support
+    if current_user.department == Department.SUPPORT:
+        if not event.support_contact_id or event.support_contact_id != current_user.id:
+            print_error("Vous ne pouvez modifier que vos propres événements")
+            raise typer.Exit(code=1)
 ```
 
 ## Flux d'authentification
