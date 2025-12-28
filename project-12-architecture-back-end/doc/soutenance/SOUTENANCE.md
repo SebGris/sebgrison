@@ -39,6 +39,8 @@
 > *Note : L'architecture suit le pattern Clean Architecture avec séparation des responsabilités : modèles, services, repositories et interface CLI."*
 >
 > *Note : CLI = Command Line Interface (interface en ligne de commande)*
+>
+> *Note : Repository = Selon Martin Fowler (Patterns of Enterprise Application Architecture), "Mediates between the domain and data mapping layers using a collection-like interface for accessing domain objects." En français : composant qui fait l'intermédiaire entre le domaine métier et la couche d'accès aux données, en utilisant une interface de type collection. Techniquement, c'est une classe abstraite (interface) définissant les opérations CRUD (create, read, update, delete), implémentée par une classe concrète (ex: `SqlAlchemyClientRepository` implémente `ClientRepositoryInterface`). Cela permet d'inverser les dépendances : le service dépend de l'interface, pas de l'implémentation. Ref: https://martinfowler.com/eaaCatalog/repository.html*
 
 ---
 
@@ -509,21 +511,17 @@ def get_clients_by_sales_contact(self, sales_contact_id: int):
 # Un commercial voit uniquement SES clients
 ```
 
-**b) Vérification d'ownership**
+**b) Vérification d'ownership dans les commandes**
 
-`src/cli/permissions.py:127-146`
+`src/cli/commands/client_commands.py`
 
 ```python
-def check_client_ownership(user: User, client) -> bool:
-    # GESTION a accès à tous les clients
-    if user.department == Department.GESTION:
-        return True
-
-    # COMMERCIAL ne peut accéder qu'à ses propres clients
-    if user.department == Department.COMMERCIAL:
-        return client.sales_contact_id == user.id
-
-    return False  # SUPPORT n'a pas accès aux clients
+# Permission check: COMMERCIAL can only update their own clients
+if current_user.department == Department.COMMERCIAL:
+    if client.sales_contact_id != current_user.id:
+        console.print_error("Vous ne pouvez modifier que vos propres clients")
+        raise typer.Exit(code=1)
+# GESTION peut modifier tous les clients (pas de restriction)
 ```
 
 **c) Décorateurs de permission**

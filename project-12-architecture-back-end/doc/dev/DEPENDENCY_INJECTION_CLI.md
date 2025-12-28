@@ -378,10 +378,13 @@ def update_client(
     current_user = kwargs.get('current_user')
 
     # Utiliser current_user pour les vérifications
-    client = client_service.get_client_by_id(client_id)
-    if not check_client_ownership(current_user, client):
-        print_error("Accès refusé")
-        raise typer.Exit(code=1)
+    client = client_service.get_client(client_id)
+
+    # Vérification de propriété pour les commerciaux
+    if current_user.department == Department.COMMERCIAL:
+        if client.sales_contact_id != current_user.id:
+            print_error("Vous ne pouvez modifier que vos propres clients")
+            raise typer.Exit(code=1)
 ```
 
 ### 4. Ne pas stocker le container globalement
@@ -460,7 +463,7 @@ Voici un exemple complet d'une commande avec permissions et vérifications :
 # src/cli/commands/client_commands.py
 import typer
 from src.containers import Container
-from src.cli.permissions import require_department, check_client_ownership
+from src.cli.permissions import require_department
 from src.models.user import Department
 from src.cli.console import print_error, print_success
 
@@ -489,16 +492,16 @@ def update_client(
     current_user = kwargs.get('current_user')
 
     # 3. Récupérer le client
-    try:
-        client = client_service.get_client_by_id(client_id)
-    except ValueError as e:
-        print_error(str(e))
+    client = client_service.get_client(client_id)
+    if not client:
+        print_error(f"Client avec l'ID {client_id} n'existe pas")
         raise typer.Exit(code=1)
 
-    # 4. Vérifier les permissions
-    if not check_client_ownership(current_user, client):
-        print_error("Vous n'avez pas accès à ce client")
-        raise typer.Exit(code=1)
+    # 4. Vérifier les permissions (COMMERCIAL ne peut modifier que ses propres clients)
+    if current_user.department == Department.COMMERCIAL:
+        if client.sales_contact_id != current_user.id:
+            print_error("Vous ne pouvez modifier que vos propres clients")
+            raise typer.Exit(code=1)
 
     # 5. Mettre à jour le client
     try:

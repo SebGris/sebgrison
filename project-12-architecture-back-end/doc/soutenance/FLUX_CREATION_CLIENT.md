@@ -32,33 +32,21 @@ def main():
     # 1. Initialize Sentry for error tracking
     init_sentry()
 
-    # 2. Initialize the dependency injection container
-    container = Container()
-
-    # 3. Wire the container to enable automatic dependency injection
-    container.wire(modules=[
-        auth_commands,
-        user_commands,
-        client_commands,
-        contract_commands,
-        event_commands,
-        permissions
-    ])
-
-    # 4. Launch the Typer application
+    # 2. Launch the Typer application
     try:
         commands.app()
-    finally:
-        # 5. Clean up: unwire the container when application exits
-        container.unwire()
+    except Exception as e:
+        # Capture unhandled exceptions in Sentry
+        capture_exception(e, context={"location": "main"})
+        raise
 ```
 
 **Ce qui se passe** :
 1. Initialisation de Sentry pour le monitoring des erreurs
-2. Création du `Container` qui configure toutes les dépendances
-3. Wiring du container pour les modules de commandes et permissions
-4. Lancement de l'application Typer qui attend les commandes de l'utilisateur
-5. Nettoyage du wiring à la fin
+2. Lancement de l'application Typer qui attend les commandes de l'utilisateur
+3. Capture des exceptions non gérées dans Sentry
+
+> **Note** : L'injection de dépendances se fait manuellement dans chaque commande via `Container()`, ce qui est plus simple et explicite.
 
 ---
 
@@ -332,9 +320,8 @@ console.print_separator()
 ┌──────────────────────────────────────────────────────────────┐
 │ 2. main.py                                                    │
 │    - Initialise Sentry                                        │
-│    - Crée le Container                                        │
-│    - Wire les modules de commandes                            │
 │    - Lance l'app Typer                                        │
+│    - Capture les exceptions non gérées                        │
 └────────────────────┬─────────────────────────────────────────┘
                      ↓
 ┌──────────────────────────────────────────────────────────────┐
