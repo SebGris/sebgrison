@@ -142,7 +142,7 @@ def create_client(
 container = Container()
 client_service = container.client_service()
 user_service = container.user_service()
-auth_service = container.auth_service()
+# Note: current_user est injecté automatiquement par le décorateur @require_department
 ```
 
 **Ce qui se passe** :
@@ -151,7 +151,8 @@ auth_service = container.auth_service()
    - Une session de base de données via `get_db_session()`
    - Un `SqlAlchemyClientRepository` avec cette session
    - Un `ClientService` avec ce repository
-3. Même chose pour `user_service` et `auth_service`
+3. Même chose pour `user_service`
+4. `current_user` est injecté automatiquement par le décorateur (pas besoin de `auth_service`)
 
 **Graphe de création** :
 ```
@@ -171,9 +172,7 @@ container.client_service()
 **Fichier** : `src/cli/commands/client_commands.py`
 
 ```python
-# Get current user from auth_service
-current_user = auth_service.get_current_user()
-
+# current_user est injecté automatiquement par @require_department
 # Auto-assign for COMMERCIAL users if no sales_contact_id provided
 if sales_contact_id == 0:
     if current_user.department == Department.COMMERCIAL:
@@ -185,7 +184,7 @@ if sales_contact_id == 0:
 ```
 
 **Ce qui se passe** :
-1. Récupération de l'utilisateur connecté via le token JWT
+1. `current_user` est déjà disponible (injecté par le décorateur `@require_department`)
 2. Si l'utilisateur est COMMERCIAL et n'a pas spécifié de contact, auto-assignation
 3. Sinon (GESTION), un ID de contact commercial est obligatoire
 
@@ -341,12 +340,13 @@ console.print_separator()
 │    container = Container()                                    │
 │    client_service = container.client_service()                │
 │    user_service = container.user_service()                    │
+│    (current_user injecté par décorateur)                      │
 └────────────────────┬─────────────────────────────────────────┘
                      ↓
 ┌──────────────────────────────────────────────────────────────┐
 │ 6. Auto-assignation (si COMMERCIAL)                           │
-│    current_user = auth_service.get_current_user()             │
-│    sales_contact_id = current_user.id                         │
+│    current_user.department == Department.COMMERCIAL ?         │
+│    → sales_contact_id = current_user.id                       │
 └────────────────────┬─────────────────────────────────────────┘
                      ↓
 ┌──────────────────────────────────────────────────────────────┐
