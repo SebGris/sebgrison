@@ -52,19 +52,20 @@ poetry run epicevents whoami
 
 **Dire** : "Sans authentification, accès refusé."
 
-### 💻 Montrer le code : `src/cli/permissions.py` (lignes 59-64)
+### 💻 Montrer le code : `src/cli/commands/auth_commands.py` (lignes 124-130)
 
 ```python
+user = auth_service.get_current_user()
+
 if not user:
-    print_separator()
-    print_error(MSG_NOT_LOGGED_IN)
-    print_error(MSG_LOGIN_HINT)
-    print_separator()
+    console.print_error(
+        "Vous n'êtes pas connecté. Utilisez 'epicevents login' pour vous connecter."
+    )
     raise typer.Exit(code=1)
 ```
 
 **Dire** :
-> "Le décorateur `@require_department` vérifie l'authentification AVANT chaque commande. Si pas de token valide → refus immédiat."
+> "La commande vérifie si un token JWT valide existe. `get_current_user()` retourne None si pas de token ou token expiré → refus."
 
 ### Commande 2 : Connexion GESTION
 
@@ -73,15 +74,20 @@ poetry run epicevents login
 # admin / Admin123!
 ```
 
-### 💻 Montrer le code : `src/services/auth_service.py` (lignes 97-109)
+### 💻 Montrer le code : `src/services/auth_service.py` (lignes 33-37 + 135-143)
 
 ```python
-def generate_token(self, user: User) -> str:
-    payload = {
-        "user_id": user.id,
-        "exp": now + timedelta(hours=24),  # Expiration 24h
-    }
-    return jwt.encode(payload, self._secret_key, algorithm="HS256")
+# Configuration JWT (lignes 33-37)
+ALGORITHM = "HS256"  # HMAC-SHA256
+
+# Génération du token (lignes 135-143)
+payload = {
+    "user_id": user.id,
+    "username": user.username,
+    "department": user.department.value,
+    "exp": expiration,  # Expiration 24h
+}
+token = jwt.encode(payload, self._secret_key, algorithm=self.ALGORITHM)
 ```
 
 **Dire** :
