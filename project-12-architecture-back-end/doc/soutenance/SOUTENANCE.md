@@ -12,7 +12,7 @@
 
 1. [Vue d'ensemble](#1-vue-densemble-30-sec) (30 sec)
 2. [Authentification](#2-authentification-3-min) - 2 commandes + code (3 min)
-3. [Création utilisateur - RBAC](#3-création-dutilisateur---rbac-2-min-30) - 2 commandes + code (2 min 30)
+3. [Création utilisateur - Contrôle d'accès](#3-création-dutilisateur---contrôle-daccès-2-min-30) - 2 commandes + code (2 min 30)
 4. [Lecture/Modification des données](#4-lecturemodification-des-données-3-min) - 2 commandes + code (3 min)
 5. [Récapitulatif](#5-récapitulatif-1-min) (1 min)
 
@@ -36,7 +36,7 @@
 **Dire** :
 > "Bonjour Dawn, je vais vous présenter le système CRM Epic Events. C'est une application CLI sécurisée avec :
 > - Authentification JWT
-> - Contrôle d'accès RBAC (3 départements)
+> - Contrôle d'accès par rôles (3 départements)
 > - Protection injection SQL via SQLAlchemy
 > - Monitoring Sentry"
 
@@ -89,7 +89,7 @@ def generate_token(self, user: User) -> str:
 
 ---
 
-## 3. Création d'utilisateur - RBAC (2 min 30)
+## 3. Création d'utilisateur - Contrôle d'accès (2 min 30)
 
 ### Commande 3 : Créer un utilisateur (connecté admin/GESTION)
 
@@ -187,7 +187,7 @@ session.query(Contract).filter_by(is_signed=False)
 > "En résumé, l'application implémente :
 >
 > 1. **Auth JWT** signé HMAC-SHA256, expiration 24h
-> 2. **RBAC** avec décorateur `@require_department`
+> 2. **Contrôle d'accès par rôles** avec décorateur `@require_department`
 > 3. **Bcrypt** pour les mots de passe
 > 4. **ORM SQLAlchemy** contre injection SQL
 > 5. **Filtres contextuels** au lieu de get_all()
@@ -432,7 +432,7 @@ def create_client(...):
 **Points clés** :
 - ✅ Pas de `get_all()` - tout est filtré
 - ✅ Vérification d'ownership systématique
-- ✅ RBAC avec décorateurs
+- ✅ Contrôle d'accès par rôles avec décorateurs
 - ✅ Filtres contextuels uniquement
 
 ---
@@ -759,7 +759,7 @@ class SqlAlchemyUserRepository(UserRepository):
 
 | Risque OWASP | Notre protection | Implémentation |
 |--------------|------------------|----------------|
-| **A01 - Broken Access Control** | RBAC + Ownership checks | `src/cli/permissions.py` |
+| **A01 - Broken Access Control** | Contrôle d'accès par rôles + Ownership checks | `src/cli/permissions.py` |
 | **A02 - Cryptographic Failures** | Bcrypt + JWT HMAC-SHA256 | `src/models/user.py`, `src/services/auth_service.py` |
 | **A03 - Injection** | ORM SQLAlchemy paramétré | `src/repositories/sqlalchemy_*.py` |
 | **A04 - Insecure Design** | Clean Architecture | Architecture globale |
@@ -875,7 +875,7 @@ sentry_sdk.init(
 | JWT signé HMAC-SHA256 | Impossible de forger des tokens | `auth_service.py` |
 | Bcrypt avec salt | Rainbow tables inefficaces | `user.py:set_password()` |
 | Validation triple couche | Défense en profondeur | CLI + Service + DB |
-| RBAC dès le départ | Principe du moindre privilège | `permissions.py` |
+| Contrôle d'accès par rôles dès le départ | Principe du moindre privilège | `permissions.py` |
 | Messages d'erreur génériques | Pas de divulgation d'infos | "Username ou password incorrect" |
 | Permissions 600 token file | Lecture restreinte au propriétaire | `auth_service.py:save_token()` |
 
@@ -903,7 +903,7 @@ sentry_sdk.init(
 - [ ] `src/models/` - Modèles avec contraintes
 - [ ] `src/repositories/` - Pattern Repository
 - [ ] `src/services/` - Logique métier
-- [ ] `src/cli/permissions.py` - RBAC
+- [ ] `src/cli/permissions.py` - Contrôle d'accès par rôles
 - [ ] `src/cli/validators.py` - Validation inputs
 - [ ] `src/services/auth_service.py` - JWT + Bcrypt
 - [ ] `src/sentry_config.py` - Logging
@@ -937,7 +937,7 @@ sentry_sdk.init(
 ### Points forts à mettre en avant
 
 1. ✅ **Conformité totale** au cahier des charges (100%)
-2. ✅ **Sécurité** : OWASP Top 10, JWT, Bcrypt, RBAC
+2. ✅ **Sécurité** : OWASP Top 10, JWT, Bcrypt, contrôle d'accès par rôles
 3. ✅ **Architecture** : Clean Architecture, SOLID, DI
 4. ✅ **Bonnes pratiques** : Repository Pattern, Validation triple couche
 5. ✅ **Production-ready** : Sentry, variables d'env, tests
