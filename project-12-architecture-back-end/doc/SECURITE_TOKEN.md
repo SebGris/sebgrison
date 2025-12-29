@@ -92,6 +92,35 @@ if platform.system() == 'Windows':
     # pour une protection équivalente
 ```
 
+## Choix de l'Algorithme JWT : HS256 vs RS256
+
+### Pourquoi HS256 ?
+
+J'utilise **HS256** (HMAC-SHA256) car c'est une application CLI interne où **le même service génère et vérifie les tokens**. Pour une API publique avec des clients externes, **RS256** serait préférable car il permet de partager une clé publique sans exposer la clé privée.
+
+### Comparaison des algorithmes
+
+| Critère | HS256 (Symétrique) | RS256 (Asymétrique) |
+|---------|-------------------|---------------------|
+| **Clés** | Une seule clé secrète partagée | Paire clé privée / clé publique |
+| **Génération** | Avec la clé secrète | Avec la clé privée |
+| **Vérification** | Avec la même clé secrète | Avec la clé publique |
+| **Performance** | Plus rapide | Plus lent |
+| **Cas d'usage** | Application interne, même entité génère et vérifie | API publique, clients externes |
+
+### Quand utiliser RS256 ?
+
+- Applications multi-tenant
+- APIs publiques avec clients externes
+- Quand plusieurs services doivent vérifier les tokens sans connaître la clé de signature
+- Connexions tierces (OAuth2 avec Google, Facebook, etc.)
+
+### Références
+
+- [Auth0 - RS256 vs HS256](https://auth0.com/blog/rs256-vs-hs256-whats-the-difference/)
+- [JWT Security Best Practices 2025](https://jwt.app/blog/jwt-best-practices/)
+- [SuperTokens - RS256 vs HS256](https://supertokens.com/blog/rs256-vs-hs256)
+
 ## Conclusion
 
 Cette implémentation représente une **bonne pratique de sécurité de base** pour protéger les tokens d'authentification en environnement Unix/Linux, avec une gestion gracieuse de l'incompatibilité Windows. Pour un système de production critique, des mécanismes de protection supplémentaires sont recommandés.
