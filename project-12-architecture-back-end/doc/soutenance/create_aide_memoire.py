@@ -52,12 +52,12 @@ def create_aide_memoire():
     # Code à montrer
     p = doc.add_paragraph()
     p.add_run("CODE : ").bold = True
-    p.add_run("src/cli/permissions.py (lignes 59-64)")
+    p.add_run("src/cli/commands/auth_commands.py (lignes 124-130)")
     p.runs[-1].font.color.rgb = RGBColor(0, 100, 0)
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"Le décorateur @require_department vérifie l\'auth AVANT chaque commande. Pas de token → refus."')
+    p.add_run('"get_current_user() vérifie le token JWT. Pas de token ou expiré → refus."')
 
     doc.add_paragraph()
 
@@ -76,7 +76,7 @@ def create_aide_memoire():
     # Code JWT
     p = doc.add_paragraph()
     p.add_run("CODE : ").bold = True
-    p.add_run("src/services/auth_service.py (lignes 97-109)")
+    p.add_run("src/services/auth_service.py (lignes 33-37 + 135-143)")
     p.runs[-1].font.color.rgb = RGBColor(0, 100, 0)
 
     p = doc.add_paragraph()
