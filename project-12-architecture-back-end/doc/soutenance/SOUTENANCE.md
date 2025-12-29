@@ -854,6 +854,17 @@ sentry_sdk.init(
 )
 ```
 
+**Test d'envoi d'erreur à Sentry** (dans `src/cli/main.py`) :
+
+```python
+try:
+    raise ValueError("Test erreur Sentry - provoquée volontairement")
+except Exception as e:
+    capture_exception(e, context={"test": True, "source": "manual_test"})
+    print("Exception capturée et envoyée à Sentry!")
+```
+
+
 **Événements journalisés** :
 - ✅ Tentatives de connexion (succès/échecs)
 - ✅ Exceptions non gérées
