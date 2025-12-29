@@ -50,7 +50,7 @@
 poetry run epicevents whoami
 ```
 
-**Dire** : "Sans authentification, l'accès aux commandes est refusé."
+**Dire** : "Sans authentification, accès refusé."
 
 ### 💻 Montrer le code : `src/cli/commands/auth_commands.py` (lignes 124-130)
 
@@ -132,7 +132,7 @@ poetry run epicevents logout && poetry run epicevents login
 poetry run epicevents create-user
 ```
 
-**Dire** : "Un utilisateur COMMERCIAL ne peut pas créer d'utilisateurs, l'application refuse avec un message explicite."
+**Dire** : "COMMERCIAL ne peut pas créer d'utilisateurs → refus avec message explicite."
 
 ---
 
