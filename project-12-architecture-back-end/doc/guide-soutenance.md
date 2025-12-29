@@ -22,19 +22,22 @@
 
 ### A. Hachage de mot de passe (Protection contre fuites)
 
-**Localisation:** `src/models/user.py` (lignes 58-77)
+**Localisation:** `src/services/user_service.py` (lignes 80-98) et `src/services/password_hashing_service.py`
 
 ```python
 # ✅ BONNE PRATIQUE : Utilisation de bcrypt pour hasher les mots de passe
-def set_password(self, password: str) -> None:
-    """Hash et stocke le mot de passe de manière sécurisée"""
-    password_service = PasswordHashingService()
-    self.password_hash = password_service.hash_password(password)
+# UserService délègue au PasswordHashingService (principe SRP)
+class UserService:
+    def __init__(self, repository, password_service: PasswordHashingService):
+        self.password_service = password_service  # ✅ Injection de dépendance
 
-def verify_password(self, password: str) -> bool:
-    """Vérifie le mot de passe sans jamais stocker le plain text"""
-    password_service = PasswordHashingService()
-    return password_service.verify_password(password, self.password_hash)
+    def verify_password(self, user: User, password: str) -> bool:
+        """Vérifie le mot de passe sans jamais stocker le plain text"""
+        return self.password_service.verify_password(password, user.password_hash)
+
+    def set_password(self, user: User, password: str) -> None:
+        """Hash et stocke le mot de passe de manière sécurisée"""
+        user.password_hash = self.password_service.hash_password(password)
 ```
 
 **Points clés à expliquer :**
@@ -54,25 +57,30 @@ def verify_password(self, password: str) -> bool:
 
 ### B. JWT pour l'authentification (Tokens sécurisés)
 
-**Localisation:** `src/services/auth_service.py` (lignes 117-145)
+**Localisation:** `src/services/token_service.py` (lignes 57-85)
 
 ```python
-def generate_token(self, user: User) -> str:
-    """Génère un JWT avec expiration de 24h"""
-    now = datetime.now(timezone.utc)
-    expiration = now + timedelta(hours=24)
+# TokenService gère uniquement les opérations JWT (principe SRP)
+class TokenService:
+    TOKEN_EXPIRATION_HOURS = 24
+    ALGORITHM = "HS256"
 
-    payload = {
-        "user_id": user.id,
-        "username": user.username,
-        "department": user.department.value,
-        "exp": expiration,  # ✅ Expiration automatique
-        "iat": now          # ✅ Timestamp de création
-    }
+    def generate_token(self, user: User) -> str:
+        """Génère un JWT avec expiration de 24h"""
+        now = datetime.now(timezone.utc)
+        expiration = now + timedelta(hours=self.TOKEN_EXPIRATION_HOURS)
 
-    # ✅ Algorithme sécurisé HS256 (pas HS512 qui a des vulnérabilités)
-    token = jwt.encode(payload, self._secret_key, algorithm="HS256")
-    return token
+        payload = {
+            "user_id": user.id,
+            "username": user.username,
+            "department": user.department.value,
+            "exp": expiration,  # ✅ Expiration automatique
+            "iat": now,         # ✅ Timestamp de création
+        }
+
+        # ✅ Algorithme sécurisé HS256
+        token = jwt.encode(payload, self._secret_key, algorithm=self.ALGORITHM)
+        return token
 ```
 
 **Points clés à expliquer :**
@@ -93,16 +101,14 @@ eyJhbGc...  .  eyJ1c2V...  .  SflKxwRJ...
 
 ### C. Validation des tokens
 
-**Localisation:** `src/services/auth_service.py` (lignes 147-166)
+**Localisation:** `src/services/token_service.py` (lignes 87-106)
 
 ```python
 def validate_token(self, token: str) -> Optional[dict]:
     """Valide un JWT et retourne son payload"""
     try:
         payload = jwt.decode(
-            token,
-            self._secret_key,
-            algorithms=["HS256"]
+            token, self._secret_key, algorithms=[self.ALGORITHM]
         )
         return payload
     except jwt.ExpiredSignatureError:
@@ -132,7 +138,7 @@ TOKEN_FILE = Path.home() / ".epicevents" / "token"
 
 ### Utilisation de l'ORM SQLAlchemy (Requêtes paramétrées)
 
-**Localisation:** `src/repositories/sqlalchemy_user_repository.py` (lignes 44-55)
+**Localisation:** `src/repositories/sqlalchemy_user_repository.py` (lignes 46-55)
 
 ```python
 # ✅ SÉCURISÉ : SQLAlchemy utilise des requêtes paramétrées
@@ -177,7 +183,7 @@ session.query(User).filter_by(username=username).first()
 
 ### A. Validation côté input (Première ligne de défense)
 
-**Localisation:** `src/cli/validators.py` (lignes 46-51)
+**Localisation:** `src/cli/validators.py` (lignes 51-56)
 
 ```python
 def validate_email_callback(value: str) -> str:
@@ -188,11 +194,11 @@ def validate_email_callback(value: str) -> str:
         raise typer.BadParameter(f"Email invalide: {value}")
     return cleaned
 
-# Pattern regex (ligne 9)
+# Pattern regex (ligne 14)
 EMAIL_PATTERN = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 ```
 
-**Patterns de validation (lignes 8-18) :**
+**Patterns de validation (lignes 13-23) :**
 
 ```python
 # Email : format standard RFC 5322 (simplifié)
@@ -218,29 +224,33 @@ NAME_PATTERN = re.compile(r"^[a-zA-ZÀ-ÿ\s\-']+$")
 
 ### B. Validation métier (Business rules)
 
-**Localisation:** `src/cli/validators.py` (lignes 137-157)
+**Localisation:** `src/cli/business_validator.py` (lignes 26-50)
 
 ```python
-def validate_contract_amounts(total_amount, remaining_amount) -> None:
-    """Valide les règles métier des montants"""
-    if total_amount < 0:
-        raise ValueError("Le montant total doit être positif ou zéro")
+# BusinessValidator centralise toutes les règles métier (principe SRP)
+class BusinessValidator:
+    @staticmethod
+    def validate_contract_amounts(total_amount, remaining_amount) -> None:
+        """Valide les règles métier des montants"""
+        if total_amount < 0:
+            raise ValueError("Le montant total doit être positif ou zéro")
 
-    if remaining_amount < 0:
-        raise ValueError("Le montant restant doit être positif ou zéro")
+        if remaining_amount < 0:
+            raise ValueError("Le montant restant doit être positif ou zéro")
 
-    # ✅ Contrainte métier : montant restant <= montant total
-    if remaining_amount > total_amount:
-        raise ValueError(
-            f"Le montant restant ({remaining_amount}) ne peut pas dépasser "
-            f"le montant total ({total_amount})"
-        )
+        # ✅ Contrainte métier : montant restant <= montant total
+        if remaining_amount > total_amount:
+            raise ValueError(
+                f"Le montant restant ({remaining_amount}) ne peut pas "
+                f"dépasser le montant total ({total_amount})"
+            )
 ```
 
 **Autres validations métier importantes :**
 
 ```python
-# Validation des dates d'événement (lignes 276-299)
+# Validation des dates d'événement (lignes 109-135)
+@staticmethod
 def validate_event_dates(event_start: datetime, event_end: datetime, attendees: int):
     """Valide les dates et participants"""
     if event_end <= event_start:
@@ -537,10 +547,10 @@ def test_create_user():
 | Question | Réponse concise | Fichier référence |
 |----------|-----------------|-------------------|
 | **Comment protégez-vous contre l'injection SQL ?** | ✅ ORM SQLAlchemy avec requêtes paramétrées. Jamais de concaténation de strings SQL. Validation stricte des inputs. | `sqlalchemy_user_repository.py` |
-| **Comment gérez-vous les mots de passe ?** | ✅ Hachage avec bcrypt (salt + iterations). Jamais stocké en clair. Vérification via `verify_password()`. | `user.py:58-77` |
-| **Expliquez votre système d'authentification** | ✅ JWT avec expiration 24h, algorithme HS256, secret key en variable d'environnement. Token stocké dans `~/.epicevents/token` avec permissions 0600. | `auth_service.py` |
+| **Comment gérez-vous les mots de passe ?** | ✅ Hachage avec bcrypt (salt + iterations). Jamais stocké en clair. Vérification via `verify_password()`. | `user_service.py`, `password_hashing_service.py` |
+| **Expliquez votre système d'authentification** | ✅ JWT avec expiration 24h, algorithme HS256, secret key en variable d'environnement. Token stocké dans `~/.epicevents/token` avec permissions 0600. | `auth_service.py`, `token_service.py`, `token_storage_service.py` |
 | **Comment gérez-vous les permissions ?** | ✅ RBAC avec décorateur `@require_department()`. 3 rôles : COMMERCIAL, GESTION, SUPPORT. Principe du moindre privilège. | `permissions.py` |
-| **Validation des données utilisateur ?** | ✅ Triple validation : Input (regex) → Business logic (services) → BDD (CHECK constraints). Défense en profondeur. | `validators.py`, `contract.py:60-71` |
+| **Validation des données utilisateur ?** | ✅ Triple validation : Input (regex) → Business logic (services) → BDD (CHECK constraints). Défense en profondeur. | `validators.py`, `business_validator.py`, `contract.py` |
 | **Architecture du projet ?** | ✅ Clean Architecture : CLI → Services → Repositories → Models → BDD. Séparation des responsabilités (SOLID). Pattern Repository pour abstraction. | Toute la structure `src/` |
 | **Comment évitez-vous les fuites de données ?** | ✅ Bcrypt pour mots de passe, JWT avec expiration, validation stricte, logs Sentry pour monitoring, pas de données sensibles dans les tokens. | `auth_service.py`, `user.py` |
 | **Expliquez le pattern Repository** | ✅ Abstraction de la persistance. Interface UserRepository + implémentation SQLAlchemy. Facilite les tests (mock) et permet de changer de BDD sans toucher au code métier. | `repositories/` |
@@ -790,7 +800,7 @@ poetry run black src/
 
 | Principe | Application dans le projet |
 |----------|----------------------------|
-| **S - Single Responsibility** | Chaque classe a une seule raison de changer : UserService (logique métier), UserRepository (persistance), User (modèle) |
+| **S - Single Responsibility** | Chaque classe a une seule raison de changer : UserService (logique métier), PasswordHashingService (hachage), TokenService (JWT), TokenStorageService (stockage), BusinessValidator (règles métier), UserRepository (persistance) |
 | **O - Open/Closed** | Extension via héritage (SqlAlchemyUserRepository implémente UserRepository) |
 | **L - Liskov Substitution** | Toute implémentation de UserRepository est interchangeable |
 | **I - Interface Segregation** | Interfaces spécifiques (UserRepository, ClientRepository) au lieu d'une interface générique |
@@ -816,10 +826,15 @@ poetry run black src/
 
 ### Fichiers importants à revoir
 
-- `src/models/user.py` - Modèle User, hachage bcrypt
-- `src/services/auth_service.py` - Authentification JWT
+- `src/models/user.py` - Modèle User
+- `src/services/user_service.py` - Logique métier User et gestion mots de passe
+- `src/services/password_hashing_service.py` - Hachage bcrypt (SRP)
+- `src/services/auth_service.py` - Orchestration authentification
+- `src/services/token_service.py` - Génération/validation JWT (SRP)
+- `src/services/token_storage_service.py` - Stockage sécurisé du token (SRP)
 - `src/cli/permissions.py` - RBAC avec décorateur
-- `src/cli/validators.py` - Validation inputs/business
+- `src/cli/validators.py` - Validation inputs CLI
+- `src/cli/business_validator.py` - Règles métier (SRP)
 - `src/repositories/sqlalchemy_user_repository.py` - Protection injection SQL
 - `docs/database-schema.md` - Schéma BDD avec contraintes
 
