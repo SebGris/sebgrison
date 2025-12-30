@@ -33,7 +33,9 @@ def create_aide_memoire():
     doc.add_heading("1. VUE D'ENSEMBLE (30 sec)", level=1)
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"Bonjour Dawn, système CRM Epic Events avec : JWT, RBAC (3 départements), SQLAlchemy (anti-injection SQL), Sentry."')
+    p.add_run(
+        '"Bonjour Dawn, système CRM Epic Events avec : JWT, RBAC (3 départements), SQLAlchemy (anti-injection SQL), Sentry."'
+    )
 
     # ===== SECTION 2 =====
     doc.add_heading("2. AUTHENTIFICATION (3 min)", level=1)
@@ -47,7 +49,7 @@ def create_aide_memoire():
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"Sans auth, accès refusé."')
+    p.add_run('"Sans authentification, l\'accès est refusé."')
 
     # Code à montrer
     p = doc.add_paragraph()
@@ -57,7 +59,9 @@ def create_aide_memoire():
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"get_current_user() vérifie le token JWT. Pas de token ou expiré → refus."')
+    p.add_run(
+        '"get_current_user() vérifie le token JWT. Pas de token ou expiré → refus."'
+    )
 
     doc.add_paragraph()
 
@@ -76,12 +80,14 @@ def create_aide_memoire():
     # Code JWT
     p = doc.add_paragraph()
     p.add_run("CODE : ").bold = True
-    p.add_run("src/services/auth_service.py (lignes 33-37 + 135-143)")
+    p.add_run("src/services/token_service.py (lignes 31-32 + 73-85)")
     p.runs[-1].font.color.rgb = RGBColor(0, 100, 0)
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"Token JWT signé HMAC-SHA256. Clé secrète dans variables d\'environnement, jamais hardcodée."')
+    p.add_run(
+        '"Token JWT signé HMAC-SHA256. Clé secrète dans variables d\'environnement, jamais hardcodée."'
+    )
 
     # ===== SECTION 3 =====
     doc.add_heading("3. CRÉATION UTILISATEUR - RBAC (2 min 30)", level=1)
@@ -95,24 +101,28 @@ def create_aide_memoire():
 
     p = doc.add_paragraph()
     p.add_run("→ ").bold = True
-    p.add_run("demo_user / Demo / User / demo@test.com / 0123456789 / Demo123! / 1")
+    p.add_run(
+        "demo_user / Demo / User / demo@test.com / 0123456789 / Demo123! / 1"
+    )
     p.runs[-1].font.name = "Consolas"
     p.runs[-1].font.size = Pt(9)
 
     # Code RBAC
     p = doc.add_paragraph()
     p.add_run("CODE : ").bold = True
-    p.add_run("src/cli/commands/user_commands.py (ligne ~25)")
+    p.add_run("src/cli/commands/user_commands.py (lignes 13-15)")
     p.runs[-1].font.color.rgb = RGBColor(0, 100, 0)
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"@require_department(Department.GESTION) → seul GESTION peut créer des users."')
+    p.add_run(
+        '"@require_department(Department.GESTION) → seul GESTION peut créer des users."'
+    )
 
     # Code bcrypt
     p = doc.add_paragraph()
     p.add_run("CODE : ").bold = True
-    p.add_run("src/models/user.py (lignes 56-60)")
+    p.add_run("src/services/password_hashing_service.py (lignes 38-41)")
     p.runs[-1].font.color.rgb = RGBColor(0, 100, 0)
 
     p = doc.add_paragraph()
@@ -124,7 +134,9 @@ def create_aide_memoire():
     # Commande 4
     p = doc.add_paragraph()
     p.add_run("COMMANDE 4 : ").bold = True
-    run = p.add_run("poetry run epicevents logout && poetry run epicevents login")
+    run = p.add_run(
+        "poetry run epicevents logout && poetry run epicevents login"
+    )
     run.font.name = "Consolas"
     run.font.size = Pt(10)
 
@@ -141,7 +153,9 @@ def create_aide_memoire():
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"COMMERCIAL ne peut pas créer d\'utilisateurs → refus avec message explicite."')
+    p.add_run(
+        '"COMMERCIAL ne peut pas créer d\'utilisateurs → refus avec message explicite."'
+    )
 
     # ===== SECTION 4 =====
     doc.add_heading("4. LECTURE/MODIFICATION DONNÉES (3 min)", level=1)
@@ -162,12 +176,14 @@ def create_aide_memoire():
     # Code auto-assignation
     p = doc.add_paragraph()
     p.add_run("CODE : ").bold = True
-    p.add_run("src/cli/commands/client_commands.py (lignes 72-79)")
+    p.add_run("src/cli/commands/client_commands.py (lignes 76-78)")
     p.runs[-1].font.color.rgb = RGBColor(0, 100, 0)
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"Auto-assignation : commercial auto-assigné à ses clients. Sécurité contre usurpation."')
+    p.add_run(
+        '"Auto-assignation : commercial auto-assigné à ses clients. Sécurité contre usurpation."'
+    )
 
     doc.add_paragraph()
 
@@ -186,11 +202,15 @@ def create_aide_memoire():
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"Pas de get_all() dans l\'app. Tout est filtré contextuellement = moindre privilège."')
+    p.add_run(
+        '"Pas de get_all() dans l\'app. Tout est filtré contextuellement = moindre privilège."'
+    )
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"SQLAlchemy ORM génère des requêtes paramétrées → protection injection SQL."')
+    p.add_run(
+        '"SQLAlchemy ORM génère des requêtes paramétrées → protection injection SQL."'
+    )
 
     # ===== SECTION 5 =====
     doc.add_heading("5. RÉCAPITULATIF (1 min)", level=1)
@@ -215,7 +235,9 @@ def create_aide_memoire():
 
     p = doc.add_paragraph()
     p.add_run("DIRE : ").bold = True
-    p.add_run('"Architecture Clean Architecture : CLI → Services → Repositories → Models."')
+    p.add_run(
+        '"Architecture Clean Architecture : CLI → Services → Repositories → Models."'
+    )
 
     # ===== ENCADRÉ RAPPEL =====
     doc.add_paragraph()

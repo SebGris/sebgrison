@@ -50,7 +50,7 @@
 poetry run epicevents whoami
 ```
 
-**Dire** : "Sans authentification, accès refusé."
+**Dire** : "Sans authentification, l'accès est refusé."
 
 ### 💻 Montrer le code : `src/cli/commands/auth_commands.py` (lignes 124-130)
 
@@ -74,18 +74,23 @@ poetry run epicevents login
 # admin / Admin123!
 ```
 
-### 💻 Montrer le code : `src/services/auth_service.py` (lignes 33-37 + 135-143)
+### 💻 Montrer le code : `src/services/token_service.py` (lignes 31-32 + 73-85)
 
 ```python
-# Configuration JWT (lignes 33-37)
+# Configuration JWT (lignes 31-32)
+TOKEN_EXPIRATION_HOURS = 24
 ALGORITHM = "HS256"  # HMAC-SHA256
 
-# Génération du token (lignes 135-143)
+# Génération du token (lignes 73-85)
+now = datetime.now(timezone.utc)
+expiration = now + timedelta(hours=self.TOKEN_EXPIRATION_HOURS)
+
 payload = {
     "user_id": user.id,
     "username": user.username,
     "department": user.department.value,
-    "exp": expiration,  # Expiration 24h
+    "exp": expiration,
+    "iat": now,
 }
 token = jwt.encode(payload, self._secret_key, algorithm=self.ALGORITHM)
 ```
@@ -104,7 +109,7 @@ poetry run epicevents create-user
 # demo_user / Demo / User / demo@test.com / 0123456789 / Demo123! / 1
 ```
 
-### 💻 Montrer le code : `src/cli/commands/user_commands.py` (ligne ~25)
+### 💻 Montrer le code : `src/cli/commands/user_commands.py` (lignes 13-15)
 
 ```python
 @app.command()
@@ -112,13 +117,14 @@ poetry run epicevents create-user
 def create_user(...):
 ```
 
-### 💻 Montrer le code : `src/models/user.py` (lignes 56-60)
+### 💻 Montrer le code : `src/services/password_hashing_service.py` (lignes 38-41)
 
 ```python
-def set_password(self, password: str) -> None:
+def hash_password(self, password: str) -> str:
+    password_bytes = password.encode("utf-8")
     salt = bcrypt.gensalt()
-    hashed = bcrypt.hashpw(password.encode(), salt)
-    self.password_hash = hashed.decode()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    return hashed.decode("utf-8")
 ```
 
 **Dire** :
@@ -145,7 +151,7 @@ poetry run epicevents create-client
 # Jean / Test / jean@test.com / 0612345678 / TestCorp / (ENTRER)
 ```
 
-### 💻 Montrer le code : `src/cli/commands/client_commands.py` (lignes 72-79)
+### 💻 Montrer le code : `src/cli/commands/client_commands.py` (lignes 76-78)
 
 ```python
 if sales_contact_id == 0:
@@ -362,7 +368,7 @@ user = session.query(User).filter_by(username=username).first()
 # Paramètre bindé séparément, impossible d'injecter du SQL
 ```
 
-**Démonstration de code** : `src/repositories/sqlalchemy_user_repository.py:30-33`
+**Démonstration de code** : `src/repositories/sqlalchemy_user_repository.py:46-55`
 
 ```python
 def get_by_username(self, username: str) -> Optional[User]:
@@ -418,7 +424,7 @@ if current_user.department == Department.COMMERCIAL:
 
 **c) Décorateurs de permission**
 
-`src/cli/permissions.py:64-124`
+`src/cli/permissions.py:22-90`
 
 ```python
 @require_department(Department.COMMERCIAL, Department.GESTION)
@@ -531,20 +537,20 @@ class User(Base):
 
 **Notre protection - Bcrypt avec salt** :
 
-`src/models/user.py:56-67`
+`src/services/password_hashing_service.py:23-63`
 
 ```python
-def set_password(self, password: str) -> None:
-    """Hash and set password using bcrypt."""
+def hash_password(self, password: str) -> str:
+    """Hash a plain text password using bcrypt."""
     password_bytes = password.encode("utf-8")
     salt = bcrypt.gensalt()  # Salt unique automatique
     hashed = bcrypt.hashpw(password_bytes, salt)
-    self.password_hash = hashed.decode("utf-8")
+    return hashed.decode("utf-8")
 
-def verify_password(self, password: str) -> bool:
-    """Verify password against hash using bcrypt."""
+def verify_password(self, password: str, password_hash: str) -> bool:
+    """Verify a password against its hash using bcrypt."""
     password_bytes = password.encode("utf-8")
-    hash_bytes = self.password_hash.encode("utf-8")
+    hash_bytes = password_hash.encode("utf-8")
     return bcrypt.checkpw(password_bytes, hash_bytes)
 ```
 
@@ -579,12 +585,12 @@ $2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5jtRq5CcH6RM6
 
 **Notre protection** :
 
-`src/services/auth_service.py:97-109`
+`src/services/token_service.py:57-85`
 
 ```python
 def generate_token(self, user: User) -> str:
     now = datetime.now(timezone.utc)
-    expiration = now + timedelta(hours=24)
+    expiration = now + timedelta(hours=self.TOKEN_EXPIRATION_HOURS)
 
     payload = {
         "user_id": user.id,
@@ -594,7 +600,7 @@ def generate_token(self, user: User) -> str:
         "iat": now,          # Issued at
     }
 
-    token = jwt.encode(payload, self._secret_key, algorithm="HS256")
+    token = jwt.encode(payload, self._secret_key, algorithm=self.ALGORITHM)
     return token
 ```
 
@@ -863,7 +869,6 @@ except Exception as e:
     capture_exception(e, context={"test": True, "source": "manual_test"})
     print("Exception capturée et envoyée à Sentry!")
 ```
-
 
 **Événements journalisés** :
 - ✅ Tentatives de connexion (succès/échecs)
